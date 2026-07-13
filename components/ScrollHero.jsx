@@ -3,19 +3,19 @@
 import { useEffect, useRef, useState } from 'react';
 
 /* ============================================================
-   HERO 1 — Mahola (scrubbing de frames ligado al scroll)
+   HERO 1 — Mahola  v3
    ------------------------------------------------------------
-   FRAMES: exporta desde DaVinci PNG -> convierte a WebP y copia
-   los archivos a  /public/hero-frames/frame_0001.webp ...
-   Ajusta FRAME_COUNT al número real de frames y listo.
-   Mientras no existan frames, se dibuja un placeholder de marca.
+   - Flecha superior: viaje automático hasta que cae el texto
+   - Puerta: el vídeo reposa mientras se lee el texto
+   - Botón redondo bajo "Bailarina Profesional": lanza el viaje
+     automático (Mahola se va andando + HERO 2 entero + carga)
    ============================================================ */
 
-const FRAME_COUNT = 365; // <-- CAMBIA esto al nº real de frames
-const SCROLL_LENGTH_VH = 320; // recorrido total del hero en vh
+const FRAME_COUNT = 365;
+const SCROLL_LENGTH_VH = 320;
+const AUTO_SPEED = 420; // px/seg de los viajes automáticos
 const framePath = (i) => `/hero-frames/frame_${String(i).padStart(4, '0')}.webp`;
 
-// Colores de marca (Guía Blush & Ladrillo)
 const BRAND = {
   white: '#FFFFFF',
   offWhite: '#FDF8F7',
@@ -26,13 +26,42 @@ const BRAND = {
   wine: '#3D2422',
 };
 
-// Opacidad 0→1→0 entre tramos de progreso
-function fadeInOut(p, inStart, inEnd, outStart = 2, outEnd = 3) {
-  if (p <= inStart) return 0;
-  if (p < inEnd) return (p - inStart) / (inEnd - inStart);
-  if (p <= outStart) return 1;
-  if (p < outEnd) return 1 - (p - outStart) / (outEnd - outStart);
+/* Momentos de la coreografía (progreso 0→1 del hero) */
+const TIMING = {
+  t1In: [0.2, 0.32], // Hola / Soy Mahola
+  t2In: [0.32, 0.44], // Creadora de contenido
+  t3In: [0.44, 0.54], // Bailarina Profesional
+  allOut: [0.72, 0.84],
+  buttonIn: 0.55, // aparece el botón redondo
+  autoTarget: 0.58, // hasta dónde viaja la flecha 1
+};
+
+function fadeInOut(p, [inS, inE], [outS, outE]) {
+  if (p <= inS) return 0;
+  if (p < inE) return (p - inS) / (inE - inS);
+  if (p <= outS) return 1;
+  if (p < outE) return 1 - (p - outS) / (outE - outS);
   return 0;
+}
+
+function Arrow({ color, size = 34 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      style={{ display: 'block', animation: 'mh-bounce 1.6s ease-in-out infinite' }}
+    >
+      <path
+        d="M4 8l8 8 8-8"
+        stroke={color}
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
 }
 
 export default function ScrollHero() {
@@ -40,13 +69,13 @@ export default function ScrollHero() {
   const wrapRef = useRef(null);
   const imagesRef = useRef([]);
   const framesOkRef = useRef(false);
-  const currentFrameRef = useRef(1);
   const progressRef = useRef(0);
   const rafRef = useRef(0);
+  const autoRef = useRef(0);
 
   const [progress, setProgress] = useState(0);
   const [loaded, setLoaded] = useState(0);
-  const [framesOk, setFramesOk] = useState(null); // null = comprobando
+  const [framesOk, setFramesOk] = useState(null);
 
   /* ---------- carga de frames ---------- */
   useEffect(() => {
@@ -56,7 +85,6 @@ export default function ScrollHero() {
       if (cancelled) return;
       framesOkRef.current = true;
       setFramesOk(true);
-      // precarga progresiva en tandas para no saturar
       let i = 1;
       const batch = () => {
         if (cancelled) return;
@@ -84,19 +112,21 @@ export default function ScrollHero() {
     };
   }, []);
 
-  /* ---------- dibujo en canvas ---------- */
+  /* ---------- dibujo ---------- */
   const draw = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const { width: w, height: h } = canvas;
 
+    ctx.fillStyle = BRAND.white;
+    ctx.fillRect(0, 0, w, h);
+
     if (framesOkRef.current) {
       const idx = Math.max(
         1,
         Math.min(FRAME_COUNT, Math.round(1 + progressRef.current * (FRAME_COUNT - 1)))
       );
-      // usa el frame pedido o el último cargado anterior
       let img = imagesRef.current[idx];
       let j = idx;
       while ((!img || !img.complete || !img.naturalWidth) && j > 1) {
@@ -104,39 +134,58 @@ export default function ScrollHero() {
         img = imagesRef.current[j];
       }
       if (img && img.complete && img.naturalWidth) {
-        // object-fit: cover
         const s = Math.max(w / img.naturalWidth, h / img.naturalHeight);
         const dw = img.naturalWidth * s;
         const dh = img.naturalHeight * s;
-        ctx.clearRect(0, 0, w, h);
         ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
-        currentFrameRef.current = idx;
         return;
       }
     }
 
-    // ---- placeholder de marca (sin frames todavía) ----
     const g = ctx.createLinearGradient(0, 0, w, h);
     g.addColorStop(0, BRAND.offWhite);
     g.addColorStop(0.55, BRAND.blush);
     g.addColorStop(1, BRAND.softPink);
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, w, h);
+  };
 
-    // círculo suave que "respira" con el scroll (simula el vídeo)
-    const p = progressRef.current;
-    const r = Math.min(w, h) * (0.18 + p * 0.22);
-    ctx.beginPath();
-    ctx.arc(w / 2, h * 0.52, r, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(255,255,255,0.55)';
-    ctx.fill();
+  /* ---------- viajes automáticos ---------- */
+  const cancelAuto = () => cancelAnimationFrame(autoRef.current);
 
-    ctx.fillStyle = BRAND.wine;
-    ctx.globalAlpha = 0.45;
-    ctx.font = `500 ${Math.max(12, Math.round(w / 90))}px Inter, sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.fillText('Tus frames irán aquí →  /public/hero-frames/frame_0001.webp', w / 2, h - 28);
-    ctx.globalAlpha = 1;
+  const animateScrollTo = (targetAbs) => {
+    const startAbs = window.scrollY;
+    const dist = targetAbs - startAbs;
+    if (dist <= 0) return;
+    const dur = (dist / AUTO_SPEED) * 1000;
+    const t0 = performance.now();
+    const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+    cancelAuto();
+    const step = (now) => {
+      const t = Math.min(1, (now - t0) / dur);
+      window.scrollTo({ top: startAbs + dist * ease(t), behavior: 'instant' });
+      if (t < 1) autoRef.current = requestAnimationFrame(step);
+    };
+    autoRef.current = requestAnimationFrame(step);
+  };
+
+  const autoScrollToProgress = (targetP) => {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+    const total = wrap.offsetHeight - window.innerHeight;
+    const wrapTop = wrap.getBoundingClientRect().top + window.scrollY;
+    animateScrollTo(wrapTop + targetP * total);
+  };
+
+  /* Botón redondo: recorre el final del HERO 1 + HERO 2 entero + carga */
+  const startTheShow = () => {
+    const dest =
+      document.getElementById('trabajo') || document.getElementById('hero2');
+    if (dest) {
+      animateScrollTo(dest.getBoundingClientRect().top + window.scrollY);
+    } else {
+      autoScrollToProgress(1);
+    }
   };
 
   /* ---------- scroll + resize ---------- */
@@ -168,47 +217,60 @@ export default function ScrollHero() {
       });
     };
 
+    const stopAuto = () => cancelAuto();
+
     resize();
     onScroll();
     window.addEventListener('resize', resize);
     window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('wheel', stopAuto, { passive: true });
+    window.addEventListener('touchstart', stopAuto, { passive: true });
     return () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('wheel', stopAuto);
+      window.removeEventListener('touchstart', stopAuto);
       cancelAnimationFrame(rafRef.current);
+      cancelAuto();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [framesOk]);
 
-  /* ---------- coreografía de textos ---------- */
+  /* ---------- coreografía ---------- */
   const p = progress;
-  const t1 = fadeInOut(p, 0.04, 0.16, 0.62, 0.74); // HOLA, soy Mahola (izquierda)
-  const t2 = fadeInOut(p, 0.14, 0.26, 0.62, 0.74); // soy creadora UGC (derecha)
-  const t3 = fadeInOut(p, 0.3, 0.42, 0.62, 0.74); // y bailarina profesional
-  const cta = fadeInOut(p, 0.78, 0.9); // botón final
+  const t1 = fadeInOut(p, TIMING.t1In, TIMING.allOut);
+  const t2 = fadeInOut(p, TIMING.t2In, TIMING.allOut);
+  const t3 = fadeInOut(p, TIMING.t3In, TIMING.allOut);
+  const arrow1 = Math.max(0, 1 - p * 20);
+  const btn = fadeInOut(p, [TIMING.buttonIn, TIMING.buttonIn + 0.05], TIMING.allOut);
 
   const fall = (op, dist = 46) => ({
     opacity: op,
     transform: `translateY(${(1 - op) * -dist}px)`,
   });
 
-  const scrollToWork = () => {
-    document.getElementById('trabajo')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section
       ref={wrapRef}
-      style={{ height: `${SCROLL_LENGTH_VH}vh`, position: 'relative' }}
+      style={{ height: `${SCROLL_LENGTH_VH}vh`, position: 'relative', background: BRAND.white }}
       aria-label="Presentación de Mahola"
     >
-      {/* h1 real oculto para SEO */}
-      <h1 className="sr-only">Mahola — creadora UGC y bailarina profesional</h1>
+      <style>{`
+        @keyframes mh-bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(9px); }
+        }
+        @keyframes mh-pulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(184,87,76,0.35); }
+          50% { box-shadow: 0 0 0 14px rgba(184,87,76,0); }
+        }
+      `}</style>
 
-      <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
+      <h1 className="sr-only">Mahola — creadora de contenido UGC y bailarina profesional</h1>
+
+      <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', background: BRAND.white }}>
         <canvas ref={canvasRef} style={{ display: 'block' }} />
 
-        {/* velo blanco muy sutil para que el texto vino respire (regla 90/8/2) */}
         <div
           style={{
             position: 'absolute',
@@ -219,133 +281,155 @@ export default function ScrollHero() {
           }}
         />
 
-        {/* texto izquierda */}
+        {/* fundido a blanco al final del HERO 1 (empalme con HERO 2) */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: BRAND.white,
+            opacity: p < 0.9 ? 0 : Math.min(1, (p - 0.9) / 0.1),
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* FLECHA 1 — arriba de ella */}
+        <button
+          onClick={() => autoScrollToProgress(TIMING.autoTarget)}
+          aria-label="Comenzar"
+          style={{
+            position: 'absolute',
+            left: '50%',
+            bottom: '8%',
+            transform: 'translateX(-50%)',
+            background: 'rgba(255,255,255,0.55)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            border: '1px solid rgba(255,255,255,0.7)',
+            borderRadius: '50%',
+            width: 86,
+            height: 86,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            opacity: arrow1,
+            pointerEvents: arrow1 > 0.3 ? 'auto' : 'none',
+            transition: 'opacity 0.25s',
+            zIndex: 20,
+          }}
+        >
+          <Arrow color={BRAND.brick} size={40} />
+        </button>
+
+        {/* TEXTO IZQUIERDA */}
         <div
           style={{
             position: 'absolute',
             left: 'clamp(20px, 7vw, 110px)',
-            top: '38%',
-            maxWidth: '38vw',
+            top: '36%',
+            maxWidth: '40vw',
             color: BRAND.wine,
             pointerEvents: 'none',
             ...fall(t1),
           }}
         >
-          <p
-            style={{
-              fontWeight: 300,
-              fontSize: 'clamp(1rem, 1.6vw, 1.25rem)',
-              letterSpacing: '0.22em',
-              textTransform: 'uppercase',
-              margin: 0,
-            }}
-          >
-            Hola,
+          <p style={{ fontWeight: 300, fontSize: 'clamp(1.4rem, 2.6vw, 2.2rem)', margin: 0 }}>
+            Hola
           </p>
           <p
             style={{
               fontWeight: 700,
               fontSize: 'clamp(2.2rem, 6vw, 5rem)',
               lineHeight: 1.02,
-              margin: '0.2em 0 0',
+              margin: '0.12em 0 0',
             }}
           >
-            soy Mahola
+            Soy <span style={{ color: BRAND.dustyPink }}>Mahola</span>
           </p>
         </div>
 
-        {/* texto derecha */}
+        {/* TEXTO DERECHA + BOTÓN */}
         <div
           style={{
             position: 'absolute',
             right: 'clamp(20px, 7vw, 110px)',
-            top: '52%',
-            maxWidth: '38vw',
+            top: '44%',
+            maxWidth: '40vw',
             textAlign: 'right',
-            color: BRAND.wine,
-            pointerEvents: 'none',
-            ...fall(t2),
           }}
         >
           <p
             style={{
               fontWeight: 600,
-              fontSize: 'clamp(1.3rem, 3vw, 2.4rem)',
+              fontSize: 'clamp(1.4rem, 3.2vw, 2.6rem)',
               lineHeight: 1.15,
               margin: 0,
+              color: BRAND.wine,
+              pointerEvents: 'none',
+              ...fall(t2),
             }}
           >
-            soy creadora <span style={{ color: BRAND.brick }}>UGC</span>
+            <span style={{ color: BRAND.brick }}>Creadora</span> de contenido
           </p>
-        </div>
-
-        {/* subtítulo pequeño */}
-        <div
-          style={{
-            position: 'absolute',
-            left: '50%',
-            bottom: '16%',
-            transform: 'translateX(-50%)',
-            color: BRAND.wine,
-            pointerEvents: 'none',
-            textAlign: 'center',
-            ...fall(t3, 26),
-            transform: `translateX(-50%) translateY(${(1 - t3) * -26}px)`,
-          }}
-        >
           <p
             style={{
-              fontWeight: 300,
-              fontSize: 'clamp(1rem, 1.8vw, 1.4rem)',
-              letterSpacing: '0.14em',
-              margin: 0,
+              fontWeight: 400,
+              fontSize: 'clamp(1.05rem, 2vw, 1.6rem)',
+              margin: '0.5em 0 0',
+              color: BRAND.wine,
+              pointerEvents: 'none',
+              ...fall(t3, 30),
             }}
           >
-            y bailarina profesional
+            <span style={{ color: BRAND.dustyPink, fontWeight: 600 }}>Bailarina</span>{' '}
+            Profesional
           </p>
-        </div>
 
-        {/* CTA final del hero */}
-        <div
-          style={{
-            position: 'absolute',
-            left: '50%',
-            bottom: '10%',
-            transform: 'translateX(-50%)',
-            opacity: cta,
-            pointerEvents: cta > 0.5 ? 'auto' : 'none',
-            transition: 'opacity 0.2s',
-          }}
-        >
-          <button
-            onClick={scrollToWork}
+          {/* BOTÓN REDONDO — lanza Mahola andando + HERO 2 + carga */}
+          <div
             style={{
-              fontFamily: 'inherit',
-              fontWeight: 600,
-              fontSize: '0.95rem',
-              letterSpacing: '0.08em',
-              color: BRAND.white,
-              background: BRAND.brick,
-              border: 'none',
-              borderRadius: 999,
-              padding: '16px 36px',
-              cursor: 'pointer',
-              boxShadow: '0 10px 30px rgba(184,87,76,0.35)',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              marginTop: 26,
+              opacity: btn,
+              transform: `translateY(${(1 - btn) * 18}px)`,
+              transition: 'opacity 0.2s, transform 0.2s',
+              pointerEvents: btn > 0.3 ? 'auto' : 'none',
             }}
           >
-            VER MI TRABAJO
-          </button>
+            <button
+              onClick={startTheShow}
+              aria-label="Ver el trabajo de Mahola"
+              style={{
+                width: 74,
+                height: 74,
+                borderRadius: '50%',
+                border: `2px solid ${BRAND.brick}`,
+                background: 'rgba(255,255,255,0.65)',
+                backdropFilter: 'blur(6px)',
+                WebkitBackdropFilter: 'blur(6px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                animation: 'mh-pulse 2.2s ease-out infinite',
+                zIndex: 20,
+              }}
+            >
+              <Arrow color={BRAND.brick} size={30} />
+            </button>
+          </div>
         </div>
 
-        {/* pista de scroll al inicio */}
+        {/* pista de scroll inicial */}
         <div
           style={{
             position: 'absolute',
             left: '50%',
-            bottom: 24,
+            bottom: 22,
             transform: 'translateX(-50%)',
             color: BRAND.wine,
-            opacity: Math.max(0, 0.7 - p * 6),
+            opacity: Math.max(0, 0.65 - p * 8),
             fontSize: 12,
             letterSpacing: '0.3em',
             textTransform: 'uppercase',
@@ -355,7 +439,6 @@ export default function ScrollHero() {
           scroll ↓
         </div>
 
-        {/* indicador de carga de frames */}
         {framesOk && loaded < FRAME_COUNT && (
           <div
             style={{

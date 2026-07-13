@@ -4,15 +4,9 @@ import { useEffect, useRef, useState } from 'react';
 
 /* ============================================================
    SECCIONES — parallax estilo Apple (Guía Blush & Ladrillo)
-   ------------------------------------------------------------
-   FOTOS: sube tus imágenes a /public/fotos/ con estos nombres
-   y aparecerán solas (mientras no existan se ve un hueco de
-   marca con el nombre del archivo que falta):
-
-     /public/fotos/beauty.jpg
-     /public/fotos/fashion.jpg
-     /public/fotos/travel.jpg
-     /public/fotos/producto-felicidad.jpg
+   FOTOS en /public/fotos/: beauty.jpg, fashion.jpg, travel.jpg,
+   producto-felicidad.jpg (aparecen solas al subirlas).
+   El footer está en Stats.jsx (final de la página).
    ============================================================ */
 
 const BRAND = {
@@ -25,8 +19,6 @@ const BRAND = {
   wine: '#3D2422',
 };
 
-/* Foto con fallback: intenta cargar /fotos/<name>; si no existe,
-   muestra el hueco de marca con el nombre del archivo. */
 function Photo({ name, alt, ratio = '3 / 4', radius = 22 }) {
   const [ok, setOk] = useState(true);
   return (
@@ -73,7 +65,6 @@ function Photo({ name, alt, ratio = '3 / 4', radius = 22 }) {
   );
 }
 
-/* Aparece al entrar en pantalla (fade-up estilo Apple) */
 function Reveal({ children, delay = 0 }) {
   const ref = useRef(null);
   const [on, setOn] = useState(false);
@@ -104,7 +95,6 @@ function Reveal({ children, delay = 0 }) {
   );
 }
 
-/* Parallax suave: el hijo se desplaza a distinta velocidad que el scroll */
 function Parallax({ speed = 0.12, children }) {
   const ref = useRef(null);
   useEffect(() => {
@@ -185,7 +175,7 @@ export default function Sections() {
         </Reveal>
       </section>
 
-      {/* ---------- PILARES (parallax alternado) ---------- */}
+      {/* ---------- PILARES ---------- */}
       {PILLARS.map((pillar, i) => {
         const reversed = i % 2 === 1;
         return (
@@ -248,7 +238,7 @@ export default function Sections() {
         );
       })}
 
-      {/* ---------- PRODUCTO + FELICIDAD (bloque blush) ---------- */}
+      {/* ---------- PRODUCTO + FELICIDAD ---------- */}
       <section
         style={{
           background: BRAND.offWhite,
@@ -308,7 +298,7 @@ export default function Sections() {
         </div>
       </section>
 
-      {/* ---------- CTA FINAL ---------- */}
+      {/* ---------- CTA ---------- */}
       <section
         style={{
           padding: 'clamp(90px, 16vh, 180px) 6vw',
@@ -336,7 +326,7 @@ export default function Sections() {
             Contenido UGC para beauty, fashion y travel — auténtico, espontáneo y con criterio.
           </p>
           <a
-            href="mailto:hola@mahola.com" /* <-- CAMBIA por el email real */
+            href="mailto:hola@maholas.com" /* <-- CAMBIA por el email real */
             style={{
               display: 'inline-block',
               fontWeight: 600,
@@ -354,29 +344,6 @@ export default function Sections() {
           </a>
         </Reveal>
       </section>
-
-      {/* ---------- FOOTER ---------- */}
-      <footer
-        style={{
-          borderTop: `1px solid ${BRAND.blush}`,
-          padding: '28px 6vw',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 12,
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          fontSize: 13,
-          opacity: 0.75,
-        }}
-      >
-        <span style={{ fontWeight: 600 }}>Mahola</span>
-        <span>
-          {/* CAMBIA los enlaces por los perfiles reales */}
-          <a href="#" style={{ color: BRAND.wine, marginRight: 18 }}>Instagram</a>
-          <a href="#" style={{ color: BRAND.wine }}>TikTok</a>
-        </span>
-        <span>© {new Date().getFullYear()} Mahola — creadora UGC</span>
-      </footer>
     </div>
   );
 }
