@@ -11,7 +11,7 @@ import { useEffect, useRef, useState } from 'react';
    Mientras no existan frames, se dibuja un placeholder de marca.
    ============================================================ */
 
-const FRAME_COUNT = 240; // <-- CAMBIA esto al nº real de frames
+const FRAME_COUNT = 365; // <-- CAMBIA esto al nº real de frames
 const SCROLL_LENGTH_VH = 320; // recorrido total del hero en vh
 const framePath = (i) => `/hero-frames/frame_${String(i).padStart(4, '0')}.webp`;
 
