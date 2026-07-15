@@ -146,6 +146,20 @@ const PILLARS = [
 export default function Sections() {
   return (
     <div style={{ background: BRAND.white, color: BRAND.wine }}>
+      <p
+        style={{
+          textAlign: 'center',
+          fontWeight: 300,
+          fontSize: 'clamp(1.1rem, 2vw, 1.5rem)',
+          color: BRAND.wine,
+          maxWidth: 620,
+          margin: '0 auto',
+          padding: 'clamp(60px, 10vh, 100px) 6vw 0',
+          lineHeight: 1.6,
+        }}
+      >
+        Contenido que conecta — para mi comunidad y para marcas, incluido UGC.
+      </p>
       {/* ---------- MANIFIESTO ---------- */}
       <section
         id="trabajo"
@@ -209,7 +223,7 @@ export default function Sections() {
                     margin: '0 0 14px',
                   }}
                 >
-                  0{i + 1} — Pilar
+                  0{i + 1}
                 </p>
                 <h2
                   style={{
@@ -241,7 +255,7 @@ export default function Sections() {
       {/* ---------- PRODUCTO + FELICIDAD ---------- */}
       <section
         style={{
-          background: BRAND.offWhite,
+          background: `linear-gradient(180deg, ${BRAND.white} 0%, ${BRAND.offWhite} 22%)`,
           padding: 'clamp(70px, 12vh, 140px) 6vw',
         }}
       >

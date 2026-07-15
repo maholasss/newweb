@@ -13,6 +13,7 @@ export default function Outro() {
     <>
       <section
         style={{
+          background: `linear-gradient(180deg, ${BRAND.blush} 0%, ${BRAND.offWhite} 100%)`,
           padding: 'clamp(90px, 16vh, 180px) 6vw',
           textAlign: 'center',
         }}
@@ -35,7 +36,7 @@ export default function Outro() {
               opacity: 0.8,
             }}
           >
-            Contenido UGC para beauty, fashion y travel — auténtico, espontáneo y con criterio.
+            Contenido para tus redes, colaboraciones y vídeos UGC para tus anuncios. Si tu marca es de beauty, fashion o travel, hablemos.
           </p>
           <a
             href="mailto:hola@maholas.com" /* <-- CAMBIA por el email real */

@@ -252,6 +252,7 @@ export default function ScrollHero() {
   return (
     <section
       ref={wrapRef}
+      className="mh-wrap"
       style={{ height: `${SCROLL_LENGTH_VH}vh`, position: 'relative', background: BRAND.white }}
       aria-label="Presentación de Mahola"
     >
@@ -259,6 +260,11 @@ export default function ScrollHero() {
         @keyframes mh-bounce {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(9px); }
+        }
+        @media (max-width: 768px) {
+          .mh-wrap { height: 160vh !important; }
+          .mh-left { top: 12% !important; left: 6vw !important; max-width: 82vw !important; }
+          .mh-right { top: auto !important; bottom: 10% !important; right: 6vw !important; max-width: 86vw !important; }
         }
         @keyframes mh-pulse {
           0%, 100% { box-shadow: 0 0 0 0 rgba(184,87,76,0.35); }
@@ -323,6 +329,7 @@ export default function ScrollHero() {
 
         {/* TEXTO IZQUIERDA */}
         <div
+          className="mh-left"
           style={{
             position: 'absolute',
             left: 'clamp(20px, 7vw, 110px)',
@@ -350,6 +357,7 @@ export default function ScrollHero() {
 
         {/* TEXTO DERECHA + BOTÓN */}
         <div
+          className="mh-right"
           style={{
             position: 'absolute',
             right: 'clamp(20px, 7vw, 110px)',

@@ -50,7 +50,7 @@ export default function Stats() {
     <section
       id="cifras"
       style={{
-        background: `linear-gradient(180deg, ${BRAND.white} 0%, ${BRAND.offWhite} 18%, ${BRAND.blush} 100%)`,
+        background: `linear-gradient(180deg, ${BRAND.offWhite} 0%, ${BRAND.blush} 100%)`,
         padding: 'clamp(70px, 12vh, 130px) 5vw clamp(80px, 12vh, 130px)',
         color: BRAND.wine,
       }}
