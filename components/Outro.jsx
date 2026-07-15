@@ -75,6 +75,7 @@ export default function Outro() {
         <p style={{ margin: '22px 0 0', fontSize: 12, opacity: 0.75 }}>
           Web creada por{' '}
           
+          <a
             href="https://www.gorkadicapitan.com"
             target="_blank"
             rel="noopener noreferrer"
