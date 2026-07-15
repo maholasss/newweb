@@ -299,51 +299,6 @@ export default function Sections() {
       </section>
 
       {/* ---------- CTA ---------- */}
-      <section
-        style={{
-          padding: 'clamp(90px, 16vh, 180px) 6vw',
-          textAlign: 'center',
-        }}
-      >
-        <Reveal>
-          <h2
-            style={{
-              fontWeight: 700,
-              fontSize: 'clamp(2rem, 5vw, 3.6rem)',
-              margin: '0 0 16px',
-            }}
-          >
-            ¿Creamos algo juntas?
-          </h2>
-          <p
-            style={{
-              fontWeight: 300,
-              fontSize: 'clamp(1rem, 1.5vw, 1.2rem)',
-              margin: '0 0 34px',
-              opacity: 0.8,
-            }}
-          >
-            Contenido UGC para beauty, fashion y travel — auténtico, espontáneo y con criterio.
-          </p>
-          <a
-            href="mailto:hola@maholas.com" /* <-- CAMBIA por el email real */
-            style={{
-              display: 'inline-block',
-              fontWeight: 600,
-              fontSize: '1rem',
-              letterSpacing: '0.06em',
-              color: BRAND.white,
-              background: BRAND.brick,
-              borderRadius: 999,
-              padding: '18px 44px',
-              textDecoration: 'none',
-              boxShadow: '0 10px 30px rgba(184,87,76,0.35)',
-            }}
-          >
-            Trabaja conmigo
-          </a>
-        </Reveal>
-      </section>
     </div>
   );
 }
