@@ -1,0 +1,24 @@
+import { Instrument_Serif, Inter } from 'next/font/google';
+import '../globals.css';
+import Reveal from '@/components/Reveal';
+import { SITE } from '@/lib/site';
+
+const serif = Instrument_Serif({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-serif', display: 'swap' });
+const sans = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+
+export const metadata = {
+  metadataBase: new URL(SITE),
+  openGraph: { siteName: 'Mahola', locale: 'es_ES', type: 'website', images: ['/fotos/foto-4.jpg'] },
+  twitter: { card: 'summary_large_image' },
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="es" className={`${serif.variable} ${sans.variable}`}>
+      <body>
+        {children}
+        <Reveal />
+      </body>
+    </html>
+  );
+}
