@@ -1,11 +1,11 @@
-import { Instrument_Serif, Inter } from 'next/font/google';
+import { Bodoni_Moda, Jost } from 'next/font/google';
 import '../globals.css';
 import Reveal from '@/components/Reveal';
 import Active from '@/components/Active';
 import { SITE } from '@/lib/site';
 
-const serif = Instrument_Serif({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-serif', display: 'swap' });
-const sans = Inter({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
+const serif = Bodoni_Moda({ subsets: ['latin'], weight: ['400', '500', '600'], style: ['normal', 'italic'], variable: '--font-serif', display: 'swap' });
+const sans = Jost({ subsets: ['latin'], weight: ['400', '500', '600', '700'], variable: '--font-sans', display: 'swap' });
 
 export const metadata = {
   metadataBase: new URL(SITE),
