@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import LangSwitch from './LangSwitch';
 
 export default function MobileMenu({ items, lang, other, otherLabel }) {
   const [open, setOpen] = useState(false);
@@ -24,7 +25,9 @@ export default function MobileMenu({ items, lang, other, otherLabel }) {
           {items.map(([href, label], i) => (
             <Link key={href} href={href} style={{ '--i': i }} onClick={() => setOpen(false)}>{label}</Link>
           ))}
-          <Link className="msheet-lang" href={other} hrefLang={lang === 'es' ? 'en' : 'es'} style={{ '--i': items.length }} onClick={() => setOpen(false)}>{otherLabel}</Link>
+          <span className="msheet-langs" style={{ '--i': items.length }} onClick={() => setOpen(false)}>
+            <LangSwitch lang={lang} other={other} />
+          </span>
         </nav>
       )}
     </div>

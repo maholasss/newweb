@@ -5,6 +5,7 @@ import { T, ROUTES, EMAIL, IG, TIKTOK, YOUTUBE, FACEBOOK, CREDIT } from '@/lib/s
 import Glow from './Glow';
 import MobileMenu from './MobileMenu';
 import BackToPortfolio from './BackToPortfolio';
+import LangSwitch from './LangSwitch';
 
 // Logo de marca: SVG/PNG si lo tenemos, si no el nombre en serif
 export function Mark({ slug }) {
@@ -28,7 +29,7 @@ export function Header({ lang, other }) {
     <>
       <Link href={r('portfolio')}>{t.portfolio}</Link>
       <Link href={r('about')}>{t.about}</Link>
-      <Link href={other} className="lang" hrefLang={lang === 'es' ? 'en' : 'es'} aria-label={t.otherLabel}>{t.other}</Link>
+      <LangSwitch lang={lang} other={other} />
       <Link href={r('contact')} className="btn btn--dark"><span>{t.cta}</span></Link>
     </>
   );
