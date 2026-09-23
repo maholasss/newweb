@@ -317,7 +317,7 @@ export function About({ lang }) {
       <Full first photo="foto-4" kicker={t.aboutEyebrow} title={t.aboutH1} text={st[0][2]} />
 
       {/* bloque 2: corte, la fila de fotos cruza de lado a lado */}
-      <Rail photos={['foto-2', 'retrato-7', 'foto-9', 'foto-13', 'retrato-9', 'foto-6', 'foto-11', 'foto-3']}>
+      <Rail photos={['perfil', 'foto-2', 'retrato-7', 'foto-9', 'foto-13', 'retrato-9', 'foto-6', 'foto-11']}>
         <div className="rail-head">
           <span className="story-n">01</span>
           <h2>{st[1][1]}</h2>
@@ -330,7 +330,7 @@ export function About({ lang }) {
 
       {/* bloque 4: la foto se queda fija y los textos pasan por delante */}
       <div className="wrap">
-        <Pinned photo="foto-7" blocks={st.slice(3).map(([, h, p]) => [h, p])} />
+        <Pinned photo="perfil" blocks={st.slice(3).map(([, h, p]) => [h, p])} />
       </div>
 
       <div style={{ textAlign: 'center', padding: '10px 0 40px' }}>

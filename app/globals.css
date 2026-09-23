@@ -577,7 +577,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* 3. foto fija, textos que pasan */
 .pin { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(30px, 6vw, 90px); align-items: start; padding: clamp(40px, 8vw, 90px) 0; }
 .pin-media { position: sticky; top: 100px; }
-.pin-media img { display: block; border-radius: var(--radius); aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 22%; width: 100%; background: var(--blush); }
+.pin-media img { display: block; border-radius: var(--radius); aspect-ratio: 4 / 5; object-fit: cover; object-position: 50% 35%; width: 100%; background: var(--blush); }
 
 .pin-list { display: grid; }
 .pin-item { min-height: 62vh; display: grid; align-content: center; opacity: .25; transform: translateY(16px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
@@ -669,7 +669,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
    Página de enlaces (/links)
    ========================================================= */
 .links { max-width: 520px; margin: 0 auto; padding: clamp(40px, 9vw, 80px) clamp(18px, 5vw, 32px) 60px; text-align: center; display: grid; justify-items: center; }
-.links-face { width: 112px; height: 112px; border-radius: 50%; object-fit: cover; object-position: 50% 25%; border: 4px solid #fff; box-shadow: 0 20px 40px -22px rgba(31,23,22,.5); }
+.links-face { width: 118px; height: 118px; border-radius: 50%; object-fit: cover; object-position: 50% 42%; border: 4px solid #fff; box-shadow: 0 20px 40px -22px rgba(31,23,22,.5); }
 .links h1 { font-family: var(--serif); font-size: clamp(2.6rem, 11vw, 3.4rem); margin: 18px 0 6px; }
 .links-tag { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--brick); font-weight: 600; }
 .links-list { display: grid; gap: 10px; width: 100%; margin-top: 32px; }

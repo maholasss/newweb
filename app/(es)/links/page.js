@@ -22,7 +22,7 @@ const LINKS = [
 export default function Page() {
   return (
     <main className="links">
-      <img className="links-face" src="/fotos/foto-4.avif" alt="Mahola" />
+      <img className="links-face" src="/fotos/perfil-cara.avif" alt="Mahola" />
       <h1>Mahola</h1>
       <p className="links-tag">Creadora de contenido UGC · Valencia</p>
       <nav className="links-list">
