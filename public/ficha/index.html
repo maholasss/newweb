@@ -101,10 +101,24 @@
   button.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
   .note { border-left: 3px solid var(--brick); padding: 2px 0 2px 14px; color: var(--muted); font-size: 14px; margin-top: 8px; }
   @media (prefers-reduced-motion: no-preference) { .brand { transition: border-color .3s ease; } }
+
+  /* Puerta con código */
+  #gate { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: grid; place-content: center; justify-items: center; gap: 14px; padding: 24px; text-align: center; }
+  #gate h2 { font-family: var(--serif); font-weight: 400; font-size: clamp(1.9rem, 7vw, 2.6rem); margin: 0; }
+  #gate p { color: var(--muted); font-size: 14px; margin: 0 0 6px; }
+  #gate input { width: 190px; text-align: center; letter-spacing: .5em; font-size: 22px; padding: 14px 10px 14px 18px; border-radius: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+  #gate small { color: var(--brick); min-height: 18px; font-size: 13px; }
 </style></head><body>
 
 <div class="wrap">
-  <header class="top">
+  <div id="gate">
+  <h2>Hola, Mahola</h2>
+  <p>Escribe el código que te ha pasado Gorka</p>
+  <input id="code" type="password" inputmode="numeric" maxlength="4" autocomplete="off" aria-label="Código" />
+  <button type="button" id="enter">Entrar</button>
+  <small id="gateMsg"></small>
+</div>
+<header class="top">
     <p class="kicker">Para la web · maholas.com</p>
     <h1>Cuéntame lo que falta</h1>
     <p>Rellena lo que sepas, en el orden que quieras. Se guarda solo en tu móvil según escribes, así que puedes salir y volver. Lo que dejes en blanco no aparece en la web.</p>
@@ -143,6 +157,32 @@
 </div>
 
 <script>
+  // Puerta sencilla: no protege nada serio, solo evita curiosos con el enlace
+  (function gate() {
+    const CODE = '8989';
+    const g = document.getElementById('gate');
+    let ok = false;
+    try { ok = sessionStorage.getItem('ficha-ok') === '1'; } catch (e) {}
+    if (ok) { g.remove(); return; }
+    document.documentElement.style.overflow = 'hidden';
+    const inp = document.getElementById('code');
+    const msg = document.getElementById('gateMsg');
+    const check = () => {
+      if (inp.value.trim() === CODE) {
+        try { sessionStorage.setItem('ficha-ok', '1'); } catch (e) {}
+        document.documentElement.style.overflow = '';
+        g.remove();
+      } else {
+        msg.textContent = 'Ese código no es';
+        inp.value = '';
+        inp.focus();
+      }
+    };
+    document.getElementById('enter').addEventListener('click', check);
+    inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') check(); });
+    inp.focus();
+  })();
+
   const BRANDS = [
     ['huda-beauty', 'Huda Beauty', 'Maquillaje'], ['cerave', 'CeraVe', 'Skincare'],
     ['loreal-paris', "L'Oréal Paris", 'Maquillaje'], ['shein', 'SHEIN', 'Moda'],
