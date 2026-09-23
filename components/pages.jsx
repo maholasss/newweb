@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { preload } from 'react-dom';
 import { BRANDS, FEATURED, bySlug, videos, isoDuration } from '@/lib/brands';
 import { T, ROUTES, SITE, EMAIL, IG, TIKTOK, YOUTUBE, FACEBOOK, CREDIT, brandPath } from '@/lib/site';
 import { Mark, Trusted, Cta, JsonLd, catLabel } from './ui';
@@ -52,6 +53,8 @@ const videoLd = (b, lang) =>
 /* ---------------- HOME ---------------- */
 export function Home({ lang }) {
   const t = T[lang];
+  // La portada del vídeo central es lo más grande de la primera pantalla: que salga la primera
+  preload('/ugc/huda-beauty-1.webp', { as: 'image', fetchPriority: 'high' });
   const heroItems = [
     { img: '/fotos/hero-blanco-4', alt: 'Mahola en una sesión de retrato' },
     { v: '/ugc/huda-beauty-1' },
