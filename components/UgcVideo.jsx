@@ -21,6 +21,7 @@ export default function UgcVideo({ src, label, eager = false, soundLabel = 'Soun
     const io = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting) {
+          if (!v.poster && v.dataset.poster) v.poster = v.dataset.poster;
           if (!v.querySelector('source')) {
             // AV1 para quien lo soporte (pesa la mitad), H.264 para el resto
             for (const [ext, type] of [['webm', 'video/webm; codecs=av01.0.05M.08'], ['mp4', 'video/mp4']]) {
@@ -34,7 +35,7 @@ export default function UgcVideo({ src, label, eager = false, soundLabel = 'Soun
           play();
         } else v.pause();
       },
-      { threshold: 0.2 }
+      { threshold: 0.2, rootMargin: '200px 0px' }
     );
     io.observe(v);
     return () => io.disconnect();
@@ -48,10 +49,11 @@ export default function UgcVideo({ src, label, eager = false, soundLabel = 'Soun
   };
 
   return (
-    <div className="ugc" style={{ backgroundImage: `url(${src}.webp)` }}>
+    <div className="ugc" style={eager ? { backgroundImage: `url(${src}.webp)` } : undefined}>
       <video
         ref={ref}
-        poster={`${src}.webp`}
+        poster={eager ? `${src}.webp` : undefined}
+        data-poster={`${src}.webp`}
         muted
         loop
         playsInline

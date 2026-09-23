@@ -91,9 +91,9 @@ export function Home({ lang }) {
                   <UgcVideo src={it.v} eager={i === 1} label="UGC" soundLabel={t.sound} />
                 ) : (
                   <img
-                    src={`${it.img}-720.avif`}
-                    srcSet={`${it.img}-480.avif 480w, ${it.img}-720.avif 720w, ${it.img}.avif 1080w`}
-                    sizes="(max-width: 900px) 40vw, 22vw"
+                    src={`${it.img}-480.avif`}
+                    srcSet={`${it.img}-240.avif 240w, ${it.img}-360.avif 360w, ${it.img}-480.avif 480w, ${it.img}-720.avif 720w, ${it.img}.avif 1080w`}
+                    sizes={i === 1 ? '(max-width: 900px) 72vw, 24vw' : '(max-width: 900px) 38vw, 22vw'}
                     alt={it.alt}
                     fetchPriority={i === 0 ? 'high' : 'auto'}
                     decoding="async"
