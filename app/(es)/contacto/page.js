@@ -3,7 +3,7 @@ import { Contact } from '@/components/pages';
 import { alternates } from '@/lib/site';
 
 export const metadata = {
-  title: 'Contacto · Colaboraciones UGC con Mahola',
+  title: 'Contacto · Colaboraciones con Mahola',
   description: 'Escribe a Mahola, creadora UGC en Valencia: plazos, idiomas, presupuesto y cómo trabaja con las marcas.',
   alternates: alternates('/contacto', '/en/contact', 'es'),
 };

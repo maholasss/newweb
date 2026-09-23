@@ -246,7 +246,7 @@ export function Brand({ slug, lang }) {
           </div>
           <div className="brand-vids">
             {videos(b).map((v, i) => (
-              <div className="zz-phone" key={v}><UgcVideo src={v} eager={i === 0} label={`${b.name} ${i + 1}`} soundLabel={t.sound} /></div>
+              <div className="zz-phone" key={v}><UgcVideo src={v} eager={i === 0} controls label={`${b.name} ${i + 1}`} soundLabel={t.sound} /></div>
             ))}
           </div>
           {b.videoCredit && (

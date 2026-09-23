@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 
 // Vídeo vertical: carga y se reproduce solo mientras está en pantalla, en silencio.
 // La portada va de fondo, así que no hay parpadeo al arrancar.
-export default function UgcVideo({ src, label, eager = false, soundLabel = 'Sound' }) {
+export default function UgcVideo({ src, label, eager = false, soundLabel = 'Sound', controls = false }) {
   const ref = useRef(null);
   const [muted, setMuted] = useState(true);
   const [ready, setReady] = useState(false);
@@ -55,18 +55,20 @@ export default function UgcVideo({ src, label, eager = false, soundLabel = 'Soun
         muted
         loop
         playsInline
+        controls={controls}
+        controlsList="nodownload"
         preload={eager ? 'auto' : 'metadata'}
         aria-label={label}
         className={ready ? 'on' : ''}
         onLoadedData={() => setReady(true)}
       />
-      <button type="button" className="ugc-sound" onClick={toggle} aria-label={soundLabel} aria-pressed={!muted}>
+      {!controls && <button type="button" className="ugc-sound" onClick={toggle} aria-label={soundLabel} aria-pressed={!muted}>
         {muted ? (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5 6 9H2v6h4l5 4z" /><path d="m23 9-6 6M17 9l6 6" /></svg>
         ) : (
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 5 6 9H2v6h4l5 4z" /><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" /></svg>
         )}
-      </button>
+      </button>}
     </div>
   );
 }

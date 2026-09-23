@@ -11,7 +11,7 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const b = bySlug(slug);
   return {
-    title: `Creadora UGC para ${b.name} · Mahola`,
+    title: `Vídeos para ${b.name} · Mahola`,
     description: `${b.es.t}. ${b.es.p}`.slice(0, 158),
     alternates: alternates(`/marcas/${slug}`, `/en/brands/${slug}`, 'es'),
     openGraph: { images: [`/ugc/${slug}-1.webp`] },
