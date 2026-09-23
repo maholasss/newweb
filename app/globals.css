@@ -749,3 +749,41 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .stats b { font-size: 1.6rem; }
   .stats span { font-size: 11.5px; }
 }
+
+
+/* Formulario con etiquetas fijas */
+.form label { display: grid; gap: 6px; }
+.form label > span { font-size: 13px; font-weight: 600; }
+.form label em { font-style: normal; font-weight: 400; color: var(--muted); }
+.form small a { font-weight: 600; color: var(--ink); border-bottom: 1px solid var(--line); }
+
+/* Contacto: en móvil el formulario va primero */
+@media (max-width: 820px) {
+  .contact-grid { display: flex; flex-direction: column; }
+  .contact-grid .form { order: 1; }
+  .contact-grid .contact-side { order: 2; }
+}
+
+/* Cifras del hero: una versión para escritorio y otra bajo el vídeo en móvil */
+.stats--mobile { display: none; }
+@media (max-width: 900px) {
+  .stats--desk { display: none; }
+  .stats--mobile { display: flex; justify-content: center; margin-top: 22px; }
+}
+
+/* Portfolio: tres piezas para empezar */
+.picks { margin-bottom: clamp(36px, 6vw, 64px); }
+.picks-h { font-family: var(--serif); font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 16px; }
+.picks-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.pick { display: grid; gap: 10px; }
+.pick img { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-radius: var(--radius); background: var(--blush); transition: transform var(--slow) var(--ease); }
+.pick span { font-size: 14px; color: var(--muted); }
+.pick b { display: block; color: var(--ink); }
+@media (hover: hover) { .pick:hover img { transform: translateY(-4px); } }
+@media (max-width: 820px) {
+  .picks-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .pick span { font-size: 12.5px; text-align: center; }
+}
+
+/* Página de marca con un solo vídeo: que quepa entero */
+.brand-vids--one .zz-phone { width: min(300px, 100%, calc((100vh - 220px) * 9 / 16)); }

@@ -7,7 +7,7 @@ import { ROUTES, T } from '@/lib/site';
 export default function BackToPortfolio({ lang }) {
   const path = usePathname();
   const portfolio = ROUTES.portfolio[lang];
-  if (path === portfolio || path === ROUTES.home[lang]) return null;
+  if (!/^\/(marcas|en\/brands)\//.test(path)) return null;
   return (
     <Link href={portfolio} className="back-fab">
       <span aria-hidden="true">←</span> {T[lang].backToPortfolio}

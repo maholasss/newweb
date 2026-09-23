@@ -83,7 +83,7 @@ export function Home({ lang }) {
               <Link href={ROUTES.portfolio[lang]} className="btn btn--dark"><span>{t.heroCta}</span></Link>
               <Link href={ROUTES.contact[lang]} className="btn btn--ghost"><span>{t.heroCta2}</span></Link>
             </div>
-            <div className="stats hero-in" style={{ '--d': '0.48s' }}>
+            <div className="stats hero-in stats--desk" style={{ '--d': '0.48s' }}>
               {t.stats.map(([a, b]) => <div key={b}><b>{a}</b><span>{b}</span></div>)}
             </div>
           </div>
@@ -105,6 +105,9 @@ export function Home({ lang }) {
                 )}
               </div>
             ))}
+          </div>
+          <div className="stats hero-in stats--mobile" style={{ '--d': '0.5s' }}>
+            {t.stats.map(([a, b]) => <div key={b}><b>{a}</b><span>{b}</span></div>)}
           </div>
         </div>
       </section>
@@ -215,6 +218,20 @@ export function Portfolio({ lang }) {
           <h1>{t.portfolioH1}</h1>
           <p className="lead">{t.portfolioP}</p>
         </header>
+        <section className="picks">
+          <h2 className="picks-h">{t.picksH2}</h2>
+          <div className="picks-row">
+            {[['huda-beauty', 0], ['cerave', 0], ['shein', 0]].map(([slug, i]) => {
+              const b = bySlug(slug);
+              return (
+                <Link key={slug} href={brandPath(slug, lang)} className="pick">
+                  <img src={`${videos(b)[i]}.webp`} alt={`${b.name}: ${b[lang].t}`} loading="lazy" />
+                  <span><b>{b.name}</b>{t.picks[slug]}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </section>
         <h2 className="sr-h2">{t.wallH2}</h2>
         <Wall lang={lang} marks={marks} />
       </div>
@@ -256,7 +273,7 @@ export function Brand({ slug, lang }) {
             <p style={{ marginBottom: 12, color: 'var(--ink)', fontWeight: 600 }}>{b[lang].t}</p>
             <p>{b[lang].p}</p>
           </div>
-          <div className="brand-vids">
+          <div className={`brand-vids${videos(b).length === 1 ? ' brand-vids--one' : ''}`}>
             {videos(b).map((v, i) => (
               <div className="zz-phone" key={v}><UgcVideo src={v} eager={i === 0} controls label={`${b.name} ${i + 1}`} soundLabel={t.sound} /></div>
             ))}
@@ -365,7 +382,7 @@ export function Contact({ lang }) {
         <h1>{t.contactH1}</h1>
       </header>
       <div className="contact-grid">
-        <div>
+        <div className="contact-side">
           <p className="lead">{t.contactP}</p>
           <div className="contact-list">
             <a href={`mailto:${EMAIL}`}>{EMAIL} <span>→</span></a>

@@ -78,7 +78,7 @@ export function Footer({ lang }) {
         </div>
         <div className="foot-end">
           <span>© {new Date().getFullYear()} Mahola · {t.footer.rights}</span>
-          <span>{t.footer.by} <a href={CREDIT} target="_blank" rel="noopener">Gorka Di Capitán</a></span>
+          <span><Link href={lang === 'en' ? '/en/privacy' : '/privacidad'}>{lang === 'en' ? 'Privacy' : 'Privacidad'}</Link> · {t.footer.by} <a href={CREDIT} target="_blank" rel="noopener">Gorka Di Capitán</a></span>
         </div>
       </div>
     </footer>

@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import Link from 'next/link';
 import { EMAIL, T } from '@/lib/site';
 
 // Envía desde la web (FormSubmit) y, si algo falla, abre el correo con el mensaje escrito
@@ -50,14 +51,15 @@ export default function ContactForm({ lang }) {
 
   return (
     <form className="form" onSubmit={send}>
-      <input name="name" placeholder={f.name} aria-label={f.name} required />
-      <input name="email" type="email" placeholder={f.email} aria-label={f.email} required />
-      <input name="brand" placeholder={f.brand} aria-label={f.brand} />
-      <textarea name="msg" placeholder={f.msg} aria-label={f.msg} required />
+      <label><span>{f.name}</span><input name="name" autoComplete="name" required /></label>
+      <label><span>{f.email}</span><input name="email" type="email" autoComplete="email" required /></label>
+      <label><span>{f.brand} <em>({f.optional})</em></span><input name="brand" autoComplete="organization" /></label>
+      <label><span>{f.msg}</span><textarea name="msg" placeholder={f.msgHint} required /></label>
       <button type="submit" className="btn btn--dark" disabled={state === 'sending'}>
         <span>{state === 'sending' ? f.sending : f.send}</span>
       </button>
       <small>{state === 'error' ? f.errorNote : f.note}</small>
+      <small>{f.privacy} <Link href={lang === 'en' ? '/en/privacy' : '/privacidad'}>{f.privacyLink}</Link></small>
     </form>
   );
 }
