@@ -191,7 +191,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .zz-row:nth-child(even) .zz-media { order: 2; }
 .zz-media { position: relative; display: flex; justify-content: center; align-items: center; justify-self: stretch; padding: clamp(10px, 2vw, 24px) 0; }
 .zz-phone { width: min(330px, 78%); aspect-ratio: 9 / 16; border-radius: var(--radius); overflow: hidden; background: var(--blush); border: 5px solid #fff; box-shadow: 0 40px 80px -30px rgba(31,23,22,.45); position: relative; z-index: 1; }
-.zz-ghost { position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%) rotate(-90deg); font-family: var(--serif); font-size: clamp(4rem, 9vw, 8rem); white-space: nowrap; color: transparent; -webkit-text-stroke: 1px rgba(184, 87, 76, 0.35); pointer-events: none; }
 .zz-idx { font-family: var(--serif); font-style: italic; font-size: 1.1rem; color: var(--brick-text); }
 .zz-text .mark { display: flex; width: 160px; height: 42px; font-size: 34px; margin: 18px 0 20px; justify-content: flex-start; }
 .zz-text .chip { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; background: var(--bg); }
@@ -389,9 +388,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* Zig-zag: el nombre fantasma respira y la fila se ilumina */
 .zz-row { transition: background .5s; border-radius: var(--radius); }
 .zz-row:hover { background: rgba(255,255,255,.45); }
-.zz-ghost { transition: color .6s, -webkit-text-stroke-color .6s, letter-spacing .8s; }
-.zz-row:hover .zz-ghost { -webkit-text-stroke-color: rgba(184,87,76,.55); letter-spacing: .04em; }
-.zz-text .chip { transition: background .3s, color .3s, border-color .3s; }
+.zz-row:hover .zz-text .chip { transition: background .3s, color .3s, border-color .3s; }
 .zz-row:hover .zz-text .chip { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 
 /* Fotos: zoom suave dentro del marco */
@@ -449,8 +446,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
    ========================================================= */
 @media (hover: none) {
   .zz-row.active { background: rgba(255,255,255,.55); }
-  .zz-row.active .zz-ghost { -webkit-text-stroke-color: rgba(184,87,76,.55); letter-spacing: .04em; }
-  .zz-row.active .zz-text .chip { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .zz-row.active   .zz-row.active .zz-text .chip { background: var(--ink); color: var(--bg); border-color: var(--ink); }
   .zz-row.active .zz-phone { transform: translateY(-6px) scale(1.02); box-shadow: 0 40px 70px -28px rgba(31,23,22,.5); }
   .what-card.active { transform: translateY(-4px); box-shadow: 0 20px 40px -22px rgba(31,23,22,.25); }
   .what-card.active::after { transform: scaleX(1); }

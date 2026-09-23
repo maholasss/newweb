@@ -158,7 +158,6 @@ export function Home({ lang }) {
               return (
                 <article className="zz-row" key={s}>
                   <div className="zz-media">
-                    <span className="zz-ghost" aria-hidden="true">{b.name}</span>
                     <div className="zz-phone reveal">
                       <UgcVideo src={videos(b)[0]} label={`${b.name}: ${b[lang].t}`} soundLabel={t.sound} />
                     </div>
