@@ -259,7 +259,6 @@ export function Brand({ slug, lang }) {
             {b.campaigns ? (<div><dt>{t.facts.campaigns}</dt><dd>{b.campaigns}</dd></div>) : null}
             {b.since ? (<div><dt>{t.facts.since}</dt><dd>{b.since}</dd></div>) : null}
             {b.tipo ? (<div><dt>{t.facts.tipo}</dt><dd style={{ fontSize: '1.15rem', fontFamily: 'var(--sans)' }}>{b.tipo[lang]}</dd></div>) : null}
-            <div><dt>{t.facts.videos}</dt><dd>{b.d.length}</dd></div>
             {b.fav ? (<div className="wide"><dt>{t.facts.fav}</dt><dd>{b.fav[lang]}</dd></div>) : null}
           </dl>
         )}

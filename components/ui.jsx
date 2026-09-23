@@ -4,6 +4,7 @@ import { LOGOS } from '@/lib/logos';
 import { T, ROUTES, EMAIL, IG, TIKTOK, YOUTUBE, FACEBOOK, CREDIT } from '@/lib/site';
 import Glow from './Glow';
 import MobileMenu from './MobileMenu';
+import BackToPortfolio from './BackToPortfolio';
 
 // Logo de marca: SVG/PNG si lo tenemos, si no el nombre en serif
 export function Mark({ slug }) {
@@ -126,6 +127,7 @@ export function Shell({ lang, other, children }) {
     <>
       <Header lang={lang} other={other} />
       <main>{children}</main>
+      <BackToPortfolio lang={lang} />
       <Footer lang={lang} />
     </>
   );
