@@ -57,7 +57,7 @@ export default function UgcVideo({ src, label, eager = false, soundLabel = 'Soun
         playsInline
         controls={controls}
         controlsList="nodownload"
-        preload={eager ? 'auto' : 'metadata'}
+        preload={eager ? 'metadata' : 'none'}
         aria-label={label}
         className={ready ? 'on' : ''}
         onLoadedData={() => setReady(true)}

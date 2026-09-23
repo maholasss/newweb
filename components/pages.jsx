@@ -68,28 +68,36 @@ export function Home({ lang }) {
             <h1 style={{ marginTop: 18 }}>
               <span className="hero-name" aria-label="Mahola">
                 {'Mahola'.split('').map((c, i) => (
-                  <span key={i} className="ch" style={{ '--d': `${0.06 * i + 0.15}s` }} aria-hidden="true">{c}</span>
+                  <span key={i} className="ch" style={{ '--d': `${0.035 * i + 0.05}s` }} aria-hidden="true">{c}</span>
                 ))}
-                <em className="ch" style={{ '--d': '0.55s' }} aria-hidden="true">.</em>
+                <em className="ch" style={{ '--d': '0.3s' }} aria-hidden="true">.</em>
               </span>
-              <span className="hero-h1 hero-in" style={{ '--d': '0.6s' }}>{t.heroH1}</span>
+              <span className="hero-h1 hero-in" style={{ '--d': '0.3s' }}>{t.heroH1}</span>
             </h1>
-            <p className="hero-sub hero-in" style={{ '--d': '0.7s' }}>{t.heroSub}</p>
-            <div className="hero-ctas hero-in" style={{ '--d': '0.8s' }}>
+            <p className="hero-sub hero-in" style={{ '--d': '0.36s' }}>{t.heroSub}</p>
+            <div className="hero-ctas hero-in" style={{ '--d': '0.42s' }}>
               <Link href={ROUTES.portfolio[lang]} className="btn btn--dark"><span>{t.heroCta}</span></Link>
               <Link href={ROUTES.contact[lang]} className="btn btn--ghost"><span>{t.heroCta2}</span></Link>
             </div>
-            <div className="stats hero-in" style={{ '--d': '0.9s' }}>
+            <div className="stats hero-in" style={{ '--d': '0.48s' }}>
               {t.stats.map(([a, b]) => <div key={b}><b>{a}</b><span>{b}</span></div>)}
             </div>
           </div>
           <div className="phones">
             {heroItems.map((it, i) => (
-              <div className="phone hero-in" key={it.v || it.img} style={{ '--d': `${0.5 + i * 0.12}s` }}>
+              <div className="phone hero-in" key={it.v || it.img} style={{ '--d': `${0.2 + i * 0.1}s` }}>
                 {it.v ? (
                   <UgcVideo src={it.v} eager={i === 1} label="UGC" soundLabel={t.sound} />
                 ) : (
-                  <img src={`${it.img}.avif`} alt={it.alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img
+                    src={`${it.img}-720.avif`}
+                    srcSet={`${it.img}-480.avif 480w, ${it.img}-720.avif 720w, ${it.img}.avif 1080w`}
+                    sizes="(max-width: 900px) 40vw, 22vw"
+                    alt={it.alt}
+                    fetchPriority={i === 0 ? 'high' : 'auto'}
+                    decoding="async"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
                 )}
               </div>
             ))}
