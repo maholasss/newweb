@@ -1,0 +1,54 @@
+<!doctype html><html lang="es"><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Elegir fotos de SHEIN</title>
+<style>
+  :root { --bg:#141010; --fg:#f6efec; --ok:#7bd88f; --brick:#e8b4ac; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.5 -apple-system,system-ui,sans-serif; }
+  header { position:sticky; top:0; background:rgba(20,16,16,.92); backdrop-filter:blur(10px); padding:14px 16px; border-bottom:1px solid #2a2222; }
+  h1 { margin:0 0 4px; font-size:17px; }
+  p { margin:0; font-size:13px; opacity:.7; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; padding:12px; }
+  .ph { position:relative; border-radius:14px; overflow:hidden; border:3px solid transparent; }
+  .ph img { width:100%; display:block; opacity:.5; transition:.2s; }
+  .ph.on { border-color:var(--ok); } .ph.on img { opacity:1; }
+  .ph .t { position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; background:var(--ok); color:#123; font-weight:700; display:none; align-items:center; justify-content:center; }
+  .ph.on .t { display:flex; }
+  .ph .h { position:absolute; left:8px; bottom:8px; background:rgba(0,0,0,.6); border-radius:999px; padding:4px 10px; font-size:12px; }
+  .ph.hero { border-color:var(--brick); }
+  .ph.hero .h { background:var(--brick); color:#2a1a18; font-weight:700; }
+  footer { position:sticky; bottom:0; background:rgba(20,16,16,.95); padding:14px 16px 22px; border-top:1px solid #2a2222; display:grid; gap:8px; }
+  textarea { width:100%; height:64px; background:#1e1818; color:var(--fg); border:1px solid #33292a; border-radius:12px; padding:10px; font:14px/1.4 ui-monospace,monospace; }
+  button { background:var(--fg); color:#141010; border:0; border-radius:999px; padding:12px 18px; font-weight:700; }
+</style>
+<header>
+  <h1>Fotos de SHEIN</h1>
+  <p>Toca para elegir las que van a /shein. Mantén pulsada una para marcarla como la del inicio.</p>
+</header>
+<div class="grid" id="g"></div>
+<footer>
+  <textarea id="out" readonly></textarea>
+  <button onclick="navigator.clipboard.writeText(document.getElementById('out').value)">Copiar y pegármelo</button>
+</footer>
+<script>
+const names = ["4608", "4610", "4611", "4614", "4616", "4617", "4619", "4620", "4621", "4623"];
+const g = document.getElementById('g'), out = document.getElementById('out');
+let hero = null;
+names.forEach(n => {
+  const d = document.createElement('div');
+  d.className = 'ph'; d.dataset.n = n;
+  d.innerHTML = `<img src="t/${n}.jpg" alt=""><span class="t">✓</span><span class="h">${n}</span>`;
+  let timer;
+  d.addEventListener('pointerdown', () => { timer = setTimeout(() => { hero = n; d.classList.add('on'); paint(); }, 550); });
+  ['pointerup','pointerleave','pointercancel'].forEach(e => d.addEventListener(e, () => clearTimeout(timer)));
+  d.addEventListener('click', () => { d.classList.toggle('on'); if (!d.classList.contains('on') && hero === n) hero = null; paint(); });
+  g.appendChild(d);
+});
+function paint() {
+  [...g.children].forEach(d => d.classList.toggle('hero', d.dataset.n === hero));
+  const sel = [...g.querySelectorAll('.ph.on')].map(d => d.dataset.n);
+  out.value = 'SHEIN: ' + (sel.join(', ') || '(ninguna)') + (hero ? '\nINICIO: ' + hero : '');
+  document.title = 'SEL:' + sel.join(',') + '|HERO:' + (hero || '');
+}
+paint();
+</script>

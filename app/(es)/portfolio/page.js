@@ -4,7 +4,7 @@ import { alternates } from '@/lib/site';
 
 export const metadata = {
   title: 'Portfolio UGC de Mahola: CeraVe, L’Oréal, SHEIN y más',
-  description: 'Vídeos UGC de Mahola para más de 25 marcas de skincare, maquillaje, perfume, pelo y moda. Pasa el ratón por cada logo para ver el trabajo.',
+  description: 'Los vídeos UGC de Mahola para 28 marcas: CeraVe, L’Oréal Paris, SHEIN, Mugler, Lancôme, Vichy, Garnier, Huda Beauty y más. Toca una marca y se abren.',
   alternates: alternates('/portfolio', '/en/portfolio', 'es'),
 };
 export default function Page() {
