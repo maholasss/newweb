@@ -182,15 +182,16 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* Zig-zag de marcas */
 .zz { background: var(--paper); }
-.zz-row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(30px, 7vw, 110px); align-items: center; position: relative; padding: clamp(30px, 5vw, 60px) 0; }
+.zz-row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(30px, 7vw, 110px); align-items: center; position: relative; padding: clamp(40px, 6vw, 80px) 0; }
 .zz-row + .zz-row { border-top: 1px solid var(--line); }
 .zz-row:nth-child(even) .zz-media { order: 2; }
-.zz-media { position: relative; display: flex; justify-content: center; }
+.zz-media { position: relative; display: flex; justify-content: center; align-items: center; padding: clamp(10px, 2vw, 24px) 0; }
 .zz-phone { width: min(330px, 78%); aspect-ratio: 9 / 16; border-radius: var(--radius); overflow: hidden; background: var(--blush); border: 5px solid #fff; box-shadow: 0 40px 80px -30px rgba(31,23,22,.45); position: relative; z-index: 1; }
 .zz-ghost { position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%) rotate(-90deg); font-family: var(--serif); font-size: clamp(4rem, 9vw, 8rem); white-space: nowrap; color: transparent; -webkit-text-stroke: 1px rgba(184, 87, 76, 0.35); pointer-events: none; }
 .zz-idx { font-family: var(--serif); font-style: italic; font-size: 1.1rem; color: var(--brick); }
 .zz-text .mark { display: flex; width: 160px; height: 42px; font-size: 34px; margin: 18px 0 20px; justify-content: flex-start; }
 .zz-text .chip { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; background: var(--bg); }
+.zz-text { max-width: 520px; }
 .zz-text h3 { font-family: var(--serif); font-size: clamp(1.9rem, 3.4vw, 2.9rem); margin: 18px 0 14px; }
 .zz-text p { color: var(--muted); max-width: 460px; margin-bottom: 24px; }
 .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s var(--ease), transform 1s var(--ease); }

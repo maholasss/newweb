@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="bg" cx="35%" cy="28%" r="80%">
+      <stop offset="0%" stop-color="#fbe4df"/>
+      <stop offset="55%" stop-color="#f0dad5"/>
+      <stop offset="100%" stop-color="#e2b7ad"/>
+    </radialGradient>
+    <linearGradient id="metal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fff6f3"/>
+      <stop offset="22%" stop-color="#f3c9c0"/>
+      <stop offset="46%" stop-color="#c98f87"/>
+      <stop offset="58%" stop-color="#f7ded8"/>
+      <stop offset="78%" stop-color="#b8574c"/>
+      <stop offset="100%" stop-color="#8f3f37"/>
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity=".9"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <circle cx="32" cy="32" r="32" fill="url(#bg)"/>
+  <circle cx="32" cy="32" r="31" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.5"/>
+  <g font-family="Georgia, 'Times New Roman', serif" font-size="42" font-weight="700" text-anchor="middle">
+    <text x="32" y="47.4" fill="#7d352e" opacity=".35">M</text>
+    <text x="32" y="46.2" fill="url(#edge)">M</text>
+    <text x="32" y="46.6" fill="url(#metal)">M</text>
+  </g>
+</svg>
