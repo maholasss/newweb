@@ -66,7 +66,8 @@ export function Home({ lang }) {
           <div>
             <p className="eyebrow hero-in" style={{ '--d': '0.05s' }}>{t.heroEyebrow}</p>
             <h1 style={{ marginTop: 18 }}>
-              <span className="hero-name" aria-label="Mahola">
+              <span className="hero-name">
+                <span className="sr">Mahola</span>
                 {'Mahola'.split('').map((c, i) => (
                   <span key={i} className="ch" style={{ '--d': `${0.035 * i + 0.05}s` }} aria-hidden="true">{c}</span>
                 ))}

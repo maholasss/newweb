@@ -4,6 +4,7 @@
   --blush: #f0dad5;
   --rose: #e8b4ac;
   --brick: #b8574c;
+  --brick-text: #9a4238;   /* el mismo tono, con contraste suficiente para texto pequeño */
   --ink: #1f1716;
   --muted: #6f5d5a;
   --line: rgba(31, 23, 22, 0.12);
@@ -36,7 +37,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 .wrap { width: 100%; max-width: var(--wrap); margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
 .serif { font-family: var(--serif); }
-.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brick); }
+.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--brick-text); }
 .h2 { font-family: var(--serif); font-size: clamp(2.3rem, 5.2vw, 4.2rem); }
 .h2 em, .hero-name em { font-style: italic; color: var(--brick); }
 .lead { color: var(--muted); font-size: clamp(1rem, 1.3vw, 1.15rem); max-width: 560px; }
@@ -191,7 +192,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .zz-media { position: relative; display: flex; justify-content: center; align-items: center; justify-self: stretch; padding: clamp(10px, 2vw, 24px) 0; }
 .zz-phone { width: min(330px, 78%); aspect-ratio: 9 / 16; border-radius: var(--radius); overflow: hidden; background: var(--blush); border: 5px solid #fff; box-shadow: 0 40px 80px -30px rgba(31,23,22,.45); position: relative; z-index: 1; }
 .zz-ghost { position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%) rotate(-90deg); font-family: var(--serif); font-size: clamp(4rem, 9vw, 8rem); white-space: nowrap; color: transparent; -webkit-text-stroke: 1px rgba(184, 87, 76, 0.35); pointer-events: none; }
-.zz-idx { font-family: var(--serif); font-style: italic; font-size: 1.1rem; color: var(--brick); }
+.zz-idx { font-family: var(--serif); font-style: italic; font-size: 1.1rem; color: var(--brick-text); }
 .zz-text .mark { display: flex; width: 160px; height: 42px; font-size: 34px; margin: 18px 0 20px; justify-content: flex-start; }
 .zz-text .chip { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; background: var(--bg); }
 .zz-text { max-width: 500px; justify-self: start; padding-inline: clamp(0px, 2.5vw, 34px); }
@@ -515,7 +516,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .story-pic { display: block; overflow: hidden; border-radius: var(--radius); aspect-ratio: 4 / 5; background: var(--blush); }
 .story-pic { object-fit: cover; width: 100%; transition: transform 1.2s var(--ease); }
 .story-row:hover .story-pic img { transform: scale(1.04); }
-.story-n { font-family: var(--serif); font-style: italic; font-size: 1.1rem; color: var(--brick); }
+.story-n { font-family: var(--serif); font-style: italic; font-size: 1.1rem; color: var(--brick-text); }
 .story-text h2 { font-family: var(--serif); font-size: clamp(2rem, 4.2vw, 3.2rem); margin: 10px 0 16px; }
 .story-text p { color: var(--muted); font-size: clamp(1rem, 1.3vw, 1.15rem); max-width: 460px; }
 
@@ -547,7 +548,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 
 /* Encabezado que solo leen Google y los lectores de pantalla */
-.sr-h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.sr-h2, .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 
 /* Ficha de datos de cada marca */
@@ -674,7 +675,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .links { max-width: 520px; margin: 0 auto; padding: clamp(40px, 9vw, 80px) clamp(18px, 5vw, 32px) 60px; text-align: center; display: grid; justify-items: center; }
 .links-face { width: 118px; height: 118px; border-radius: 50%; object-fit: cover; object-position: 50% 42%; border: 4px solid #fff; box-shadow: 0 20px 40px -22px rgba(31,23,22,.5); }
 .links h1 { font-family: var(--serif); font-size: clamp(2.6rem, 11vw, 3.4rem); margin: 18px 0 6px; }
-.links-tag { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--brick); font-weight: 600; }
+.links-tag { font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--brick-text); font-weight: 600; }
 .links-list { display: grid; gap: 10px; width: 100%; margin-top: 32px; }
 .links-list a {
   display: flex; align-items: center; justify-content: space-between; gap: 14px;
