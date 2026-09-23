@@ -7,6 +7,7 @@ import UgcVideo from './UgcVideo';
 import Wall from './Wall';
 import ContactForm from './ContactForm';
 import { Rail, Pinned, Words, Full } from './AboutScroll';
+import HeroCards from './HeroCards';
 
 const UPLOAD = '2026-07-16';
 
@@ -92,10 +93,11 @@ export function Home({ lang }) {
             </div>
           </div>
           <div className="phones">
+            <HeroCards />
             {heroItems.map((it, i) => (
               <div className="phone hero-in" key={it.v || it.img} style={{ '--d': `${0.2 + i * 0.1}s` }}>
                 {it.v ? (
-                  <UgcVideo src={it.v} eager={i === 1} label="UGC" soundLabel={t.sound} />
+                  <UgcVideo src={it.v} eager={i === 1} silent label="UGC" soundLabel={t.sound} />
                 ) : (
                   <img
                     src={`${it.img}-480.avif`}

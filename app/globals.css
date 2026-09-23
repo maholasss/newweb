@@ -792,3 +792,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .hero-h1-part + .hero-h1-part::before { content: none; }
   .hero-h1-part + .hero-h1-part { font-weight: 400; color: var(--muted); }
 }
+
+
+/* Hero táctil: la tarjeta tocada pasa al frente */
+@media (hover: none) {
+  .phone { cursor: pointer; }
+  .phone.is-front { z-index: 8; transform: scale(1.03); }
+}
