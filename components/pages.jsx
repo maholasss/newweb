@@ -314,7 +314,7 @@ export function About({ lang }) {
       <JsonLd data={{ '@context': 'https://schema.org', '@type': 'ProfilePage', url: SITE + ROUTES.about[lang], mainEntity: person(lang) }} />
 
       {/* bloque 1: foto a pantalla completa con parallax */}
-      <Full first photo="foto-4" kicker={t.aboutEyebrow} title={t.aboutH1} text={st[0][2]} />
+      <Full first photo="sobre-hero" kicker={t.aboutEyebrow} title={t.aboutH1} text={st[0][2]} />
 
       {/* bloque 2: corte, la fila de fotos cruza de lado a lado */}
       <Rail photos={['perfil', 'foto-2', 'retrato-7', 'foto-9', 'foto-13', 'retrato-9', 'foto-6', 'foto-11']}>
