@@ -8,6 +8,7 @@ import Wall from './Wall';
 import ContactForm from './ContactForm';
 import { Rail, Pinned, Words, Full } from './AboutScroll';
 import HeroCards from './HeroCards';
+import BackToPortfolio from './BackToPortfolio';
 
 const UPLOAD = '2026-07-16';
 
@@ -270,6 +271,7 @@ export function Brand({ slug, lang }) {
         }}
       />
       <div className="wrap">
+        <BackToPortfolio lang={lang} />
         <section className="brand-hero">
           <div>
             <p className="eyebrow"><Link href={ROUTES.portfolio[lang]}>Portfolio</Link> · {catLabel(b.cat, lang)}</p>

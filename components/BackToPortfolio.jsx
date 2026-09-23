@@ -9,8 +9,10 @@ export default function BackToPortfolio({ lang }) {
   const portfolio = ROUTES.portfolio[lang];
   if (!/^\/(marcas|en\/brands)\//.test(path)) return null;
   return (
-    <Link href={portfolio} className="back-fab">
-      <span aria-hidden="true">←</span> {T[lang].backToPortfolio}
-    </Link>
+    <div className="back-fab-wrap">
+      <Link href={portfolio} className="back-fab">
+        <span aria-hidden="true">←</span> {T[lang].backToPortfolio}
+      </Link>
+    </div>
   );
 }

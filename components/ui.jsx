@@ -134,7 +134,6 @@ export function Shell({ lang, other, children }) {
     <>
       <Header lang={lang} other={other} />
       <main>{children}</main>
-      <BackToPortfolio lang={lang} />
       <Footer lang={lang} />
     </>
   );
