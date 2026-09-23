@@ -315,10 +315,10 @@ export function About({ lang }) {
       <JsonLd data={{ '@context': 'https://schema.org', '@type': 'ProfilePage', url: SITE + ROUTES.about[lang], mainEntity: person(lang) }} />
 
       {/* bloque 1: foto a pantalla completa con parallax */}
-      <Full first photo="retrato-3" kicker={t.aboutEyebrow} title={t.aboutH1} text={st[0][2]} />
+      <Full first photo="foto-4" kicker={t.aboutEyebrow} title={t.aboutH1} text={st[0][2]} />
 
       {/* bloque 2: corte, la fila de fotos cruza de lado a lado */}
-      <Rail photos={['retrato-7', 'retrato-2', 'foto-4', 'retrato-9', 'retrato-6', 'foto-12', 'retrato-10', 'retrato-4']}>
+      <Rail photos={['foto-2', 'retrato-7', 'foto-9', 'foto-13', 'retrato-9', 'foto-6', 'foto-11', 'foto-3']}>
         <div className="rail-head">
           <span className="story-n">01</span>
           <h2>{st[1][1]}</h2>
@@ -327,11 +327,11 @@ export function About({ lang }) {
       </Rail>
 
       {/* bloque 3: otro corte a pantalla completa, en oscuro */}
-      <Full dark photo="retrato-8" kicker="02" title={st[2][1]} text={st[2][2]} />
+      <Full dark photo="retrato-3" kicker="02" title={st[2][1]} text={st[2][2]} />
 
       {/* bloque 4: la foto se queda fija y los textos pasan por delante */}
       <div className="wrap">
-        <Pinned photo="retrato-5" blocks={st.slice(3).map(([, h, p]) => [h, p])} />
+        <Pinned photo="foto-7" blocks={st.slice(3).map(([, h, p]) => [h, p])} />
       </div>
 
       <div style={{ textAlign: 'center', padding: '10px 0 40px' }}>

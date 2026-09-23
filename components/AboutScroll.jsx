@@ -120,7 +120,7 @@ export function Full({ photo, kicker, title, text, dark = false, first = false }
       w,
       (r, vh) => (r.top + r.height / 2 - vh / 2) / vh,
       (p) => {
-        i.style.transform = `translate3d(0, ${(-p * 14).toFixed(2)}%, 0) scale(1.22)`;
+        i.style.transform = `translate3d(0, ${(-p * 9).toFixed(2)}%, 0) scale(1.1)`;
         if (x) x.style.transform = `translate3d(0, ${(p * 24).toFixed(1)}px, 0)`;
       },
       0.15
