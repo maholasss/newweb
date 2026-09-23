@@ -86,17 +86,22 @@ export function Footer({ lang }) {
 }
 
 export function Trusted({ lang }) {
-  const list = (
-    <ul>
-      {BRANDS.map((b) => <li key={b.slug}><Mark slug={b.slug} /></li>)}
+  // Dos listas idénticas seguidas: al desplazar media cinta, encaja sin hueco
+  const list = (hidden) => (
+    <ul aria-hidden={hidden || undefined}>
+      {BRANDS.map((b) => (
+        <li key={b.slug}><Mark slug={b.slug} /></li>
+      ))}
     </ul>
   );
   return (
     <section className="trusted" aria-label={T[lang].trusted}>
       <p>{T[lang].trusted}</p>
-      <div className="marquee">
-        {list}
-        <div aria-hidden="true">{list}</div>
+      <div className="marquee-mask">
+        <div className="marquee">
+          {list(false)}
+          {list(true)}
+        </div>
       </div>
     </section>
   );
