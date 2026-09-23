@@ -787,3 +787,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* Página de marca con un solo vídeo: que quepa entero */
 .brand-vids--one .zz-phone { width: min(300px, 100%, calc((100vh - 220px) * 9 / 16)); }
+
+
+/* H1 del hero: en móvil, la especialidad en su propia línea */
+.hero-h1-part + .hero-h1-part::before { content: ' '; }
+@media (max-width: 900px) {
+  .hero-h1-part { display: block; }
+  .hero-h1-part + .hero-h1-part::before { content: none; }
+  .hero-h1-part + .hero-h1-part { font-weight: 400; color: var(--muted); }
+}

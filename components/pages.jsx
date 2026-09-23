@@ -76,7 +76,11 @@ export function Home({ lang }) {
                 ))}
                 <em className="ch" style={{ '--d': '0.3s' }} aria-hidden="true">.</em>
               </span>
-              <span className="hero-h1 hero-in" style={{ '--d': '0.3s' }}>{t.heroH1}</span>
+              <span className="hero-h1 hero-in" style={{ '--d': '0.3s' }}>
+                {t.heroH1.split(': ').map((part, i, arr) => (
+                  <span key={i} className="hero-h1-part">{part}{i < arr.length - 1 ? ':' : ''}</span>
+                ))}
+              </span>
             </h1>
             <p className="hero-sub hero-in" style={{ '--d': '0.36s' }}>{t.heroSub}</p>
             <div className="hero-ctas hero-in" style={{ '--d': '0.42s' }}>
