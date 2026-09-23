@@ -9,6 +9,7 @@ export const metadata = {
 };
 
 const LINKS = [
+  ['Mi web', 'maholas.com', '/'],
   ['Portfolio', 'Los vídeos, marca por marca', '/portfolio'],
   ['Trabajemos juntas', 'Colaboraciones y campañas', '/contacto'],
   ['Sobre mí', 'Quién soy y cómo trabajo', '/sobre-mi'],
