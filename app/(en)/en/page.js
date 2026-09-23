@@ -3,8 +3,8 @@ import { Home } from '@/components/pages';
 import { alternates } from '@/lib/site';
 
 export const metadata = {
-  title: 'Mahola · UGC creator for beauty, fashion & lifestyle',
-  description: 'Mahola is a UGC content creator and professional dancer. Skincare, makeup and fashion videos for brands like CeraVe, L’Oréal Paris and SHEIN.',
+  title: 'Mahola · UGC content creator in Valencia, Spain',
+  description: 'UGC content creator based in Valencia, Spain. 60+ beauty, fashion and fragrance campaigns: ambassador for Lancôme and Mugler, SHEIN influencer. Spanish and English.',
   alternates: alternates('/', '/en', 'en'),
 };
 export default function Page() {

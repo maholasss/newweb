@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { BRANDS, FEATURED, bySlug, videos, isoDuration } from '@/lib/brands';
-import { T, ROUTES, SITE, EMAIL, IG, TIKTOK, CREDIT, brandPath } from '@/lib/site';
+import { T, ROUTES, SITE, EMAIL, IG, TIKTOK, YOUTUBE, FACEBOOK, CREDIT, brandPath } from '@/lib/site';
 import { Mark, Trusted, Cta, JsonLd, catLabel } from './ui';
 import UgcVideo from './UgcVideo';
 import Wall from './Wall';
 import ContactForm from './ContactForm';
+import { Rail, Pinned, Words, Full } from './AboutScroll';
 
 const UPLOAD = '2026-07-16';
 
@@ -14,11 +15,14 @@ export const person = (lang) => ({
   name: 'Mahola',
   alternateName: 'maholasss',
   url: SITE + ROUTES.home[lang],
-  image: `${SITE}/fotos/foto-4.jpg`,
+  image: `${SITE}/fotos/foto-4.avif`,
   jobTitle: lang === 'en' ? ['UGC Content Creator', 'Professional Dancer'] : ['Creadora de contenido UGC', 'Bailarina profesional'],
   email: EMAIL,
-  sameAs: [IG, TIKTOK],
-  knowsAbout: ['UGC', 'Skincare', 'Makeup', 'Fashion', 'Dance'],
+  sameAs: [IG, TIKTOK, YOUTUBE, FACEBOOK],
+  knowsAbout: ['UGC', 'Skincare', 'Makeup', 'Fashion', 'Fragrance', 'Dance'],
+  knowsLanguage: ['es', 'en'],
+  address: { '@type': 'PostalAddress', addressLocality: 'Valencia', addressCountry: 'ES' },
+  areaServed: [{ '@type': 'Country', name: 'España' }, { '@type': 'Country', name: 'United Kingdom' }],
 });
 
 const website = {
@@ -30,6 +34,8 @@ const website = {
   creator: { '@type': 'Person', name: 'Gorka Di Capitán', url: CREDIT },
 };
 
+const gorka = { '@type': 'Person', name: 'Gorka Di Capitán', url: CREDIT };
+
 const videoLd = (b, lang) =>
   videos(b).map((v, i) => ({
     '@type': 'VideoObject',
@@ -40,12 +46,17 @@ const videoLd = (b, lang) =>
     uploadDate: UPLOAD,
     duration: isoDuration(b.d[i]),
     creator: { '@id': `${SITE}/#mahola` },
+    ...(b.videoCredit ? { producer: gorka, copyrightHolder: gorka } : {}),
   }));
 
 /* ---------------- HOME ---------------- */
 export function Home({ lang }) {
   const t = T[lang];
-  const heroVids = ['/ugc/cerave-1', '/ugc/loreal-paris-3', '/ugc/shein-2'];
+  const heroItems = [
+    { img: '/fotos/hero-blanco-4', alt: 'Mahola en una sesión de retrato' },
+    { v: '/ugc/huda-beauty-1' },
+    { img: '/fotos/hero-shein', alt: 'Mahola en una sesión para SHEIN' },
+  ];
   return (
     <>
       <JsonLd data={{ '@context': 'https://schema.org', '@graph': [website, person(lang)] }} />
@@ -53,23 +64,34 @@ export function Home({ lang }) {
         <div className="hero-blob" />
         <div className="wrap hero-grid">
           <div>
-            <p className="eyebrow">{t.heroEyebrow}</p>
+            <p className="eyebrow hero-in" style={{ '--d': '0.05s' }}>{t.heroEyebrow}</p>
             <h1 style={{ marginTop: 18 }}>
-              <span className="hero-name">Mahola<em>.</em></span>
-              <span className="hero-h1">{t.heroH1}</span>
+              <span className="hero-name" aria-label="Mahola">
+                {'Mahola'.split('').map((c, i) => (
+                  <span key={i} className="ch" style={{ '--d': `${0.06 * i + 0.15}s` }} aria-hidden="true">{c}</span>
+                ))}
+                <em className="ch" style={{ '--d': '0.55s' }} aria-hidden="true">.</em>
+              </span>
+              <span className="hero-h1 hero-in" style={{ '--d': '0.6s' }}>{t.heroH1}</span>
             </h1>
-            <p className="hero-sub">{t.heroSub}</p>
-            <div className="hero-ctas">
+            <p className="hero-sub hero-in" style={{ '--d': '0.7s' }}>{t.heroSub}</p>
+            <div className="hero-ctas hero-in" style={{ '--d': '0.8s' }}>
               <Link href={ROUTES.portfolio[lang]} className="btn btn--dark"><span>{t.heroCta}</span></Link>
               <Link href={ROUTES.contact[lang]} className="btn btn--ghost"><span>{t.heroCta2}</span></Link>
             </div>
-            <div className="stats">
+            <div className="stats hero-in" style={{ '--d': '0.9s' }}>
               {t.stats.map(([a, b]) => <div key={b}><b>{a}</b><span>{b}</span></div>)}
             </div>
           </div>
           <div className="phones">
-            {heroVids.map((v, i) => (
-              <div className="phone" key={v}><UgcVideo src={v} eager={i === 1} label="UGC" soundLabel={t.sound} /></div>
+            {heroItems.map((it, i) => (
+              <div className="phone hero-in" key={it.v || it.img} style={{ '--d': `${0.5 + i * 0.12}s` }}>
+                {it.v ? (
+                  <UgcVideo src={it.v} eager={i === 1} label="UGC" soundLabel={t.sound} />
+                ) : (
+                  <img src={`${it.img}.avif`} alt={it.alt} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                )}
+              </div>
             ))}
           </div>
         </div>
@@ -83,6 +105,7 @@ export function Home({ lang }) {
             <p className="eyebrow">{t.whatEyebrow}</p>
             <h2 className="h2">{t.whatH2}</h2>
             <p className="lead">{t.whatP}</p>
+            <p className="plain">{t.whatPlain}</p>
           </div>
           <div className="what-grid">
             {t.what.map(([h, p], i) => (
@@ -142,8 +165,8 @@ export function Home({ lang }) {
       <section className="sec">
         <div className="wrap about-grid">
           <div className="about-photos reveal">
-            <picture><source srcSet="/fotos/foto-4.avif" type="image/avif" /><img src="/fotos/foto-4.jpg" alt="Mahola" loading="lazy" /></picture>
-            <picture><source srcSet="/fotos/foto-12.avif" type="image/avif" /><img src="/fotos/foto-12.jpg" alt="Mahola" loading="lazy" /></picture>
+            <img src="/fotos/foto-4.avif" alt="Mahola" loading="lazy" />
+            <img src="/fotos/foto-12.avif" alt="Mahola" loading="lazy" />
           </div>
           <div>
             <p className="eyebrow">{t.aboutEyebrow}</p>
@@ -180,6 +203,7 @@ export function Portfolio({ lang }) {
           <h1>{t.portfolioH1}</h1>
           <p className="lead">{t.portfolioP}</p>
         </header>
+        <h2 className="sr-h2">{t.wallH2}</h2>
         <Wall lang={lang} marks={marks} />
       </div>
       <div style={{ height: 'clamp(60px, 8vw, 100px)' }} />
@@ -225,7 +249,30 @@ export function Brand({ slug, lang }) {
               <div className="zz-phone" key={v}><UgcVideo src={v} eager={i === 0} label={`${b.name} ${i + 1}`} soundLabel={t.sound} /></div>
             ))}
           </div>
+          {b.videoCredit && (
+            <p className="credit credit--video">{t.videoBy} <a href={CREDIT} target="_blank" rel="noopener">Gorka Di Capitán</a></p>
+          )}
         </section>
+        <h2 className="sr-h2">{t.brandVids}</h2>
+        {(b.campaigns || b.since || b.fav) && (
+          <dl className="brand-facts">
+            {b.campaigns ? (<div><dt>{t.facts.campaigns}</dt><dd>{b.campaigns}</dd></div>) : null}
+            {b.since ? (<div><dt>{t.facts.since}</dt><dd>{b.since}</dd></div>) : null}
+            {b.tipo ? (<div><dt>{t.facts.tipo}</dt><dd style={{ fontSize: '1.15rem', fontFamily: 'var(--sans)' }}>{b.tipo[lang]}</dd></div>) : null}
+            <div><dt>{t.facts.videos}</dt><dd>{b.d.length}</dd></div>
+            {b.fav ? (<div className="wide"><dt>{t.facts.fav}</dt><dd>{b.fav[lang]}</dd></div>) : null}
+          </dl>
+        )}
+        {b.photos && (
+          <section className="brand-photos">
+            {b.photos.map((n, i) => (
+              <img key={n} className="reveal" style={{ transitionDelay: `${i * 0.08}s` }} src={`/fotos/${n}.avif`} alt={`${b.name} · Mahola`} loading="lazy" />
+            ))}
+          </section>
+        )}
+        {b.photoCredit && (
+          <p className="credit">{t.photoBy} <a href={CREDIT} target="_blank" rel="noopener">Gorka Di Capitán</a></p>
+        )}
         <section style={{ padding: '30px 0 80px', display: 'grid', gap: 18 }}>
           <p className="eyebrow">{t.otherBrands}</p>
           <div className="chips">
@@ -240,43 +287,59 @@ export function Brand({ slug, lang }) {
 }
 
 /* ---------------- SOBRE MÍ ---------------- */
-const ABOUT = {
+// Cada foto lleva su trozo de texto y entra desde un lado al bajar
+const STORY = {
   es: [
-    'Soy <strong>Mahola</strong>, bailarina profesional y creadora de contenido UGC. Grabo vídeos para marcas de skincare, maquillaje, perfume, pelo y moda desde mi día a día.',
-    'El baile me ha dado lo que más se nota en un vídeo corto: <strong>ritmo, expresión y soltura delante de la cámara</strong>. Sé cuánto dura un gesto, cuándo cortar y cómo hacer que alguien se quede hasta el final.',
-    'He trabajado con más de veinticinco marcas, de CeraVe, L’Oréal Paris y Vichy a Mugler, SHEIN o Garnier. Grabo en español y en inglés.',
-    'Si tu marca busca contenido que se vea real y que venda, <strong>hablemos</strong>.',
+    ['retrato-3', 'Soy Mahola', 'Creadora de contenido en Valencia desde 2019. No me limito a enseñar un producto: monto una historia alrededor y hago que la marca sea parte de mi mundo.'],
+    ['retrato-7', 'Vengo de la danza', 'Años de formación artística que salen en cada vídeo: expresión, movimiento, interpretación y saber transmitir algo delante de una cámara. Eso le da otra dimensión al contenido.'],
+    ['foto-4', 'Más de 60 campañas desde 2019', 'Embajadora de Lancôme, Mugler y Cacharel, e influencer de SHEIN. También CeraVe, L’Oréal Paris, Vichy, Garnier o Huda Beauty. Beauty sobre todo, y moda, perfume, pelo y lifestyle.'],
+    ['retrato-9', 'Del móvil al estudio', 'Hay campañas que piden el móvil y la cocina de casa, y otras que piden estudio, luz y un fotógrafo detrás. Trabajo con las dos y te digo cuál le conviene a tu producto.'],
+    ['retrato-1', 'No me encasillo', 'Beauty, moda, lifestyle, pelo, perfumes. Quiero que la gente me siga por mí y por cómo cuento las cosas, no por un solo nicho. Grabo en español y en inglés.'],
+    ['foto-12', 'Hablemos', 'Lo que quiero es que una marca piense “me gusta cómo cuenta las cosas, a ver qué haría con lo nuestro”. Si es tu caso, escríbeme.'],
   ],
   en: [
-    'I’m <strong>Mahola</strong>, a professional dancer and UGC content creator. I film videos for skincare, makeup, fragrance, haircare and fashion brands from my everyday life.',
-    'Dance gave me what shows most in short-form video: <strong>rhythm, expression and ease in front of the camera</strong>. I know how long a gesture lasts, when to cut and how to keep someone watching to the end.',
-    'I’ve worked with more than twenty-five brands, from CeraVe, L’Oréal Paris and Vichy to Mugler, SHEIN and Garnier. I film in Spanish and English.',
-    'If your brand wants content that looks real and sells, <strong>let’s talk</strong>.',
+    ['retrato-3', 'I’m Mahola', 'A content creator based in Valencia since 2019. I don’t just show a product: I build a story around it and make the brand part of my world.'],
+    ['retrato-7', 'I come from dance', 'Years of artistic training that show up in every video: expression, movement, performance and knowing how to put something across on camera. That gives the content another dimension.'],
+    ['foto-4', 'More than 60 campaigns since 2019', 'Brand ambassador for Lancôme, Mugler and Cacharel, and a SHEIN influencer. Also CeraVe, L’Oréal Paris, Vichy, Garnier and Huda Beauty. Mostly beauty, plus fashion, fragrance, haircare and lifestyle.'],
+    ['retrato-9', 'From phone to studio', 'Some campaigns call for a phone and my own kitchen, others for a studio, proper lighting and a photographer. I work both ways and I will tell you which suits your product.'],
+    ['retrato-1', 'I don’t box myself in', 'Beauty, fashion, lifestyle, haircare, fragrance. I want people to follow me for me and for how I tell things, not for one niche. I film in Spanish and English.'],
+    ['foto-12', 'Let’s talk', 'What I want is for a brand to think “I like how she tells things, let’s see what she’d do with ours”. If that’s you, write to me.'],
   ],
 };
+
 export function About({ lang }) {
   const t = T[lang];
-  const pics = [4, 1, 3, 9, 11];
+  const st = STORY[lang];
   return (
     <>
       <JsonLd data={{ '@context': 'https://schema.org', '@type': 'ProfilePage', url: SITE + ROUTES.about[lang], mainEntity: person(lang) }} />
-      <div className="wrap">
-        <header className="page-head">
-          <p className="eyebrow">{t.aboutEyebrow}</p>
-          <h1>{t.aboutH1}</h1>
-        </header>
-        <div className="about-page">
-          <div className="about-gallery">
-            {pics.map((n, i) => (
-              <picture key={n}><source srcSet={`/fotos/foto-${n}.avif`} type="image/avif" /><img src={`/fotos/foto-${n}.jpg`} alt="Mahola" loading={i ? 'lazy' : 'eager'} /></picture>
-            ))}
-          </div>
-          <div className="prose">
-            {ABOUT[lang].map((p, i) => <p key={i} dangerouslySetInnerHTML={{ __html: p }} />)}
-            <div style={{ marginTop: 10 }}><Link href={ROUTES.contact[lang]} className="btn btn--dark"><span>{t.nav.cta}</span></Link></div>
-          </div>
+
+      {/* bloque 1: foto a pantalla completa con parallax */}
+      <Full first photo="retrato-3" kicker={t.aboutEyebrow} title={t.aboutH1} text={st[0][2]} />
+
+      {/* bloque 2: corte, la fila de fotos cruza de lado a lado */}
+      <Rail photos={['retrato-7', 'retrato-2', 'foto-4', 'retrato-9', 'retrato-6', 'foto-12', 'retrato-10', 'retrato-4']}>
+        <div className="rail-head">
+          <span className="story-n">01</span>
+          <h2>{st[1][1]}</h2>
+          <Words text={st[1][2]} />
         </div>
+      </Rail>
+
+      {/* bloque 3: otro corte a pantalla completa, en oscuro */}
+      <Full dark photo="retrato-8" kicker="02" title={st[2][1]} text={st[2][2]} />
+
+      {/* bloque 4: la foto se queda fija y los textos pasan por delante */}
+      <div className="wrap">
+        <Pinned photo="retrato-5" blocks={st.slice(3).map(([, h, p]) => [h, p])} />
       </div>
+
+      <div style={{ textAlign: 'center', padding: '10px 0 40px' }}>
+        <Link href={ROUTES.contact[lang]} className="btn btn--dark"><span>{t.nav.cta}</span></Link>
+      </div>
+      <p className="credit credit--video" style={{ paddingBottom: 70 }}>
+        {t.photoBy} <a href={CREDIT} target="_blank" rel="noopener">Gorka Di Capitán</a>
+      </p>
     </>
   );
 }
@@ -297,10 +360,29 @@ export function Contact({ lang }) {
             <a href={`mailto:${EMAIL}`}>{EMAIL} <span>→</span></a>
             <a href={IG} target="_blank" rel="noopener">Instagram · @maholasss <span>→</span></a>
             <a href={TIKTOK} target="_blank" rel="noopener">TikTok · @maholasss <span>→</span></a>
+            <a href={YOUTUBE} target="_blank" rel="noopener">YouTube · @maholasss <span>→</span></a>
           </div>
         </div>
         <ContactForm lang={lang} />
       </div>
+      <section className="faq">
+        <h2>{t.faqH2}</h2>
+        <dl>
+          {t.faq.map(([q, a]) => (
+            <div key={q}>
+              <dt>{q}</dt>
+              <dd>{a}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+      <JsonLd
+        data={{
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: t.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+        }}
+      />
     </div>
   );
 }

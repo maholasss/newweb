@@ -1,6 +1,7 @@
 import { Instrument_Serif, Inter } from 'next/font/google';
 import '../globals.css';
 import Reveal from '@/components/Reveal';
+import Active from '@/components/Active';
 import { SITE } from '@/lib/site';
 
 const serif = Instrument_Serif({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'], variable: '--font-serif', display: 'swap' });
@@ -17,7 +18,9 @@ export default function RootLayout({ children }) {
     <html lang="es" className={`${serif.variable} ${sans.variable}`}>
       <body>
         {children}
+        <div className="progress" aria-hidden="true"><i /></div>
         <Reveal />
+        <Active />
       </body>
     </html>
   );

@@ -3,8 +3,8 @@ import { About } from '@/components/pages';
 import { alternates } from '@/lib/site';
 
 export const metadata = {
-  title: 'Sobre Mahola, bailarina y creadora de contenido UGC',
-  description: 'Mahola es bailarina profesional y creadora UGC. Del baile trae el ritmo y la soltura delante de la cámara que hacen que un vídeo corto se vea hasta el final.',
+  title: 'Sobre Mahola, creadora de contenido en Valencia',
+  description: 'Mahola es creadora de contenido UGC y bailarina profesional. Del baile trae el ritmo y la soltura delante de la cámara que hacen que un vídeo corto se vea hasta el final.',
   alternates: alternates('/sobre-mi', '/en/about', 'es'),
 };
 export default function Page() {

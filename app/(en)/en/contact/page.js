@@ -4,7 +4,7 @@ import { alternates } from '@/lib/site';
 
 export const metadata = {
   title: 'Contact · UGC collaborations with Mahola',
-  description: 'Get in touch with Mahola for collaborations, UGC campaigns or content for TikTok and Instagram ads.',
+  description: 'Get in touch with Mahola, a UGC creator in Valencia: timings, languages, quotes and how she works with brands.',
   alternates: alternates('/contacto', '/en/contact', 'en'),
 };
 export default function Page() {

@@ -4,7 +4,7 @@ import { alternates } from '@/lib/site';
 
 export const metadata = {
   title: 'Contacto · Colaboraciones UGC con Mahola',
-  description: 'Escribe a Mahola para colaboraciones, campañas UGC o contenido para anuncios en TikTok e Instagram.',
+  description: 'Escribe a Mahola, creadora UGC en Valencia: plazos, idiomas, presupuesto y cómo trabaja con las marcas.',
   alternates: alternates('/contacto', '/en/contact', 'es'),
 };
 export default function Page() {

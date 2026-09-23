@@ -1,10 +1,13 @@
 'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { BRANDS, CATS, videos } from '@/lib/brands';
 import { T, brandPath } from '@/lib/site';
 
-// Pared de logos: al pasar el ratón se enciende el vídeo detrás del logo; clic = lightbox con sonido.
+// Tonos de su paleta para los círculos
+const TINTS = ['var(--blush)', 'var(--paper)', 'var(--rose)', '#f7e7e2', '#eddcd6', '#f3d9d3'];
+
+// Pared de marcas: círculos con el logo; al pinchar se abren los vídeos con sonido.
 export default function Wall({ lang, marks }) {
   const t = T[lang];
   const [cat, setCat] = useState('all');
@@ -22,7 +25,7 @@ export default function Wall({ lang, marks }) {
       </div>
       <div className="wall">
         {list.map((b, i) => (
-          <Tile key={b.slug} b={b} lang={lang} mark={marks[b.slug]} onOpen={() => setOpen({ i, v: 0 })} />
+          <Tile key={b.slug} b={b} lang={lang} i={i} mark={marks[b.slug]} onOpen={() => setOpen({ i, v: 0 })} />
         ))}
       </div>
       {open && <Lightbox list={list} open={open} setOpen={setOpen} lang={lang} />}
@@ -30,27 +33,18 @@ export default function Wall({ lang, marks }) {
   );
 }
 
-function Tile({ b, lang, mark, onOpen }) {
-  const vref = useRef(null);
-  const src = videos(b)[0];
-  const enter = () => {
-    const v = vref.current;
-    if (!v) return;
-    if (!v.src) v.src = `${src}.mp4`;
-    v.play().catch(() => {});
-  };
-  const leave = () => vref.current?.pause();
+function Tile({ b, lang, mark, onOpen, i }) {
   return (
-    <button type="button" className="tile" onMouseEnter={enter} onMouseLeave={leave} onFocus={enter} onBlur={leave} onClick={onOpen} aria-label={`${b.name}: ${b[lang].t}`}>
-      <span className="tile-media">
-        <video ref={vref} poster={`${src}.webp`} muted loop playsInline preload="none" />
-      </span>
-      {mark}
-      {b.d.length > 1 && <span className="tile-count">{b.d.length}</span>}
-      <span className="tile-info">
-        <span>{CATS[b.cat][lang]}</span>
-        <b>{b[lang].t}</b>
-      </span>
+    <button
+      type="button"
+      className="tile"
+      style={{ '--i': i, '--tint': TINTS[i % TINTS.length] }}
+      onClick={onOpen}
+      aria-label={`${b.name}: ${b[lang].t}`}
+    >
+      <span className="tile-disc">{mark}</span>
+      <span className="tile-name">{b.name}</span>
+      <span className="tile-cat">{CATS[b.cat][lang]} · {b.d.length} {b.d.length > 1 ? T[lang].videos : T[lang].video}</span>
     </button>
   );
 }
@@ -89,7 +83,10 @@ function Lightbox({ list, open, setOpen, lang }) {
       <button type="button" className="lb-close" onClick={close}>{t.close} ✕</button>
       <div className="lb-inner">
         <div className="lb-video">
-          <video key={src} src={`${src}.mp4`} poster={`${src}.webp`} autoPlay playsInline controls loop />
+          <video key={src} poster={`${src}.webp`} autoPlay playsInline controls loop>
+            <source src={`${src}.webm`} type="video/webm; codecs=av01.0.05M.08" />
+            <source src={`${src}.mp4`} type="video/mp4" />
+          </video>
         </div>
         <div className="lb-bar">
           <button type="button" onClick={() => go(-1)} aria-label={t.prev}>←</button>

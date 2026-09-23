@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { BRANDS, CATS, bySlug } from '@/lib/brands';
 import { LOGOS } from '@/lib/logos';
-import { T, ROUTES, EMAIL, IG, TIKTOK, CREDIT } from '@/lib/site';
+import { T, ROUTES, EMAIL, IG, TIKTOK, YOUTUBE, FACEBOOK, CREDIT } from '@/lib/site';
+import Glow from './Glow';
+import MobileMenu from './MobileMenu';
 
 // Logo de marca: SVG/PNG si lo tenemos, si no el nombre en serif
 export function Mark({ slug }) {
@@ -29,15 +31,18 @@ export function Header({ lang, other }) {
       <Link href={r('contact')} className="btn btn--dark"><span>{t.cta}</span></Link>
     </>
   );
+  const big = [
+    [r('home'), lang === 'en' ? 'Home' : 'Inicio'],
+    [r('portfolio'), t.portfolio],
+    [r('about'), t.about],
+    [r('contact'), t.contact],
+  ];
   return (
     <header className="hdr">
       <div className="wrap">
         <Link href={r('home')} className="logo">Mahola</Link>
         <nav className="nav">{links}</nav>
-        <details className="mnav">
-          <summary>Menu</summary>
-          <nav className="mnav-panel">{links}</nav>
-        </details>
+        <MobileMenu items={big} lang={lang} other={other} otherLabel={t.otherLabel} />
       </div>
     </header>
   );
@@ -63,6 +68,8 @@ export function Footer({ lang }) {
             <div>
               <a href={IG} target="_blank" rel="noopener">Instagram</a>
               <a href={TIKTOK} target="_blank" rel="noopener">TikTok</a>
+              <a href={YOUTUBE} target="_blank" rel="noopener">YouTube</a>
+              <a href={FACEBOOK} target="_blank" rel="noopener">Facebook</a>
               <a href={`mailto:${EMAIL}`}>Email</a>
             </div>
           </div>
@@ -98,6 +105,7 @@ export function Cta({ lang }) {
   return (
     <section className="wrap" style={{ paddingBottom: 'clamp(60px, 8vw, 100px)' }}>
       <div className="cta">
+        <Glow />
         <h2 className="h2">{t.ctaH2}</h2>
         <p>{t.ctaP}</p>
         <Link href={ROUTES.contact[lang]} className="btn"><span>{t.ctaBtn}</span></Link>

@@ -3,8 +3,8 @@ import { About } from '@/components/pages';
 import { alternates } from '@/lib/site';
 
 export const metadata = {
-  title: 'About Mahola, dancer and UGC content creator',
-  description: 'Mahola is a professional dancer and UGC creator. Dance gives her the rhythm and ease on camera that keep people watching a short video to the end.',
+  title: 'About Mahola, content creator and dancer',
+  description: 'Mahola is a UGC content creator and professional dancer. Dance gives her the rhythm and ease on camera that keep people watching a short video to the end.',
   alternates: alternates('/sobre-mi', '/en/about', 'en'),
 };
 export default function Page() {
