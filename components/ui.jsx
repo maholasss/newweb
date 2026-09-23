@@ -29,6 +29,7 @@ export function Header({ lang, other }) {
     <>
       <Link href={r('portfolio')}>{t.portfolio}</Link>
       <Link href={r('about')}>{t.about}</Link>
+      <Link href={r('contact')}>{t.contact}</Link>
       <LangSwitch lang={lang} other={other} />
       <Link href={r('contact')} className="btn btn--dark"><span>{t.cta}</span></Link>
     </>
