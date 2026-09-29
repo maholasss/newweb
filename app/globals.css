@@ -815,5 +815,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* Cabecera de "Qué hago" centrada también en escritorio */
 .sec-head--center { text-align: center; justify-items: center; }
+.sec-head--center .h2 { white-space: pre-line; }
 .sec-head--center .lead, .sec-head--center .plain, .sec-head--center .reach { margin-left: auto; margin-right: auto; text-align: center; }
 .sec-head--center .reach::before { display: none; }
