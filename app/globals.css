@@ -582,7 +582,9 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .pin-media img { display: block; border-radius: var(--radius); aspect-ratio: 3 / 4; object-fit: cover; object-position: 50% 18%; width: 100%; background: var(--blush); }
 
 .pin-list { display: grid; }
-.pin-item { min-height: 62vh; display: grid; align-content: center; opacity: .25; transform: translateY(16px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.pin-item { min-height: 0; padding: clamp(28px, 4vw, 48px) 0; display: grid; align-content: center; opacity: .25; transform: translateY(16px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+.pin-item + .pin-item { border-top: 1px solid var(--line); }
+.pin-list { padding-top: clamp(10px, 3vw, 40px); }
 .pin-item.on { opacity: 1; transform: none; }
 .pin-item h2 { font-family: var(--serif); font-size: clamp(1.9rem, 4vw, 3rem); margin: 10px 0 14px; }
 .pin-item p { color: var(--muted); font-size: clamp(1rem, 1.3vw, 1.15rem); max-width: 460px; }
