@@ -139,3 +139,38 @@ export function Full({ photo, kicker, title, text, dark = false, first = false }
     </section>
   );
 }
+
+// Cierre: la foto se centra, crece hasta llenar la pantalla y se difumina
+// mientras entra el botón de contacto.
+export function Finale({ photo, kicker, title, text, cta, href }) {
+  const wrap = useRef(null);
+  useEffect(() => {
+    const w = wrap.current;
+    if (!w) return;
+    if (reduced()) { w.style.setProperty('--p', '1'); return; }
+    return follow(
+      w,
+      (r, vh) => {
+        const total = r.height - vh;
+        return total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 1;
+      },
+      (p) => { w.style.setProperty('--p', p.toFixed(3)); },
+      0.14
+    );
+  }, []);
+  return (
+    <section className="finale" ref={wrap}>
+      <div className="finale-stick">
+        <div className="finale-bg">
+          <img src={`/fotos/${photo}.avif`} alt="" loading="lazy" />
+        </div>
+        <div className="finale-text">
+          {kicker && <p className="eyebrow">{kicker}</p>}
+          <h2>{title}</h2>
+          <p>{text}</p>
+          <a href={href} className="btn btn--dark finale-btn"><span>{cta}</span></a>
+        </div>
+      </div>
+    </section>
+  );
+}

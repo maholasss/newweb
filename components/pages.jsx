@@ -6,7 +6,7 @@ import { Mark, Trusted, Cta, JsonLd, catLabel } from './ui';
 import UgcVideo from './UgcVideo';
 import Wall from './Wall';
 import ContactForm from './ContactForm';
-import { Rail, Pinned, Words, Full } from './AboutScroll';
+import { Rail, Pinned, Words, Full, Finale } from './AboutScroll';
 import HeroCards from './HeroCards';
 import BackToPortfolio from './BackToPortfolio';
 
@@ -373,12 +373,11 @@ export function About({ lang }) {
 
       {/* bloque 4: la foto se queda fija y los textos pasan por delante */}
       <div className="wrap">
-        <Pinned photo="perfil" start={3} blocks={st.slice(3).map(([, h, p]) => [h, p])} />
+        <Pinned photo="perfil" start={3} blocks={st.slice(3, 5).map(([, h, p]) => [h, p])} />
       </div>
 
-      <div style={{ textAlign: 'center', padding: '10px 0 40px' }}>
-        <Link href={ROUTES.contact[lang]} className="btn btn--dark"><span>{t.nav.cta}</span></Link>
-      </div>
+      {/* cierre: la foto se centra, crece y se difumina mientras entra el botón */}
+      <Finale photo="perfil" kicker="05" title={st[5][1]} text={st[5][2]} cta={t.ctaBtn} href={ROUTES.contact[lang]} />
       <p className="credit credit--video" style={{ paddingBottom: 70 }}>
         {t.photoBy} <a href={CREDIT} target="_blank" rel="noopener">Gorka Di Capitán</a>
       </p>
