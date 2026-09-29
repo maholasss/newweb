@@ -123,7 +123,7 @@ export function Home({ lang }) {
 
       <section className="sec">
         <div className="wrap">
-          <div className="sec-head">
+          <div className="sec-head sec-head--center">
             <p className="eyebrow">{t.whatEyebrow}</p>
             <h2 className="h2">{t.whatH2}</h2>
             <p className="lead">{t.whatP}</p>
