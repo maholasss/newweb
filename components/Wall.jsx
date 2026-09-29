@@ -16,7 +16,8 @@ export default function Wall({ lang, marks }) {
 
   return (
     <>
-      <div className="filters" role="group">
+      <p className="filters-h">{t.filtersH}</p>
+      <div className="filters" role="group" aria-label={t.filtersH}>
         <button type="button" aria-pressed={cat === 'all'} onClick={() => setCat('all')}>{t.all}</button>
         {cats.map((c) => (
           <button key={c} type="button" aria-pressed={cat === c} onClick={() => setCat(c)}>{CATS[c][lang]}</button>

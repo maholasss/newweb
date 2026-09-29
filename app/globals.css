@@ -238,7 +238,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* Portfolio: pared de logos */
 .page-head { padding: clamp(66px, 8vw, 100px) 0 clamp(30px, 4vw, 50px); display: grid; gap: 16px; }
 .page-head h1 { font-family: var(--serif); font-size: clamp(2.8rem, 7vw, 5.6rem); }
-.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.filters-h { text-align: center; font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--brick-text); margin: 0 0 12px; }
+.filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 34px; }
 .filters button { border: 1px solid var(--line); background: transparent; border-radius: 999px; padding: 9px 16px; font-size: 14px; font-weight: 600; transition: background .25s, color .25s; }
 .filters button[aria-pressed='true'] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: clamp(14px, 3vw, 30px) 10px; }
@@ -771,7 +772,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* Portfolio: tres piezas para empezar */
 .picks { margin-bottom: clamp(36px, 6vw, 64px); }
-.picks-h { font-family: var(--serif); font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 16px; }
+.picks-h { font-family: var(--serif); font-size: clamp(1.5rem, 3vw, 2rem); margin-bottom: 16px; text-align: center; }
 .picks-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
 .pick { display: grid; gap: 10px; }
 .pick-media { display: block; aspect-ratio: 9 / 16; border-radius: var(--radius); overflow: hidden; background: var(--blush); transition: transform var(--slow) var(--ease); }
