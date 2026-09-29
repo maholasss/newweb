@@ -66,7 +66,7 @@ export function Rail({ photos, children }) {
 }
 
 // La foto se queda quieta y los textos pasan por delante
-export function Pinned({ photo, blocks }) {
+export function Pinned({ photo, blocks, start = 1 }) {
   const wrap = useRef(null);
   useEffect(() => {
     const w = wrap.current;
@@ -87,7 +87,7 @@ export function Pinned({ photo, blocks }) {
       <div className="pin-list">
         {blocks.map(([h, p], i) => (
           <div className="pin-item" key={h}>
-            <span className="story-n">{String(i + 1).padStart(2, '0')}</span>
+            <span className="story-n">{String(start + i).padStart(2, '0')}</span>
             <h2>{h}</h2>
             <Words text={p} />
           </div>

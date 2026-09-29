@@ -227,15 +227,20 @@ export function Portfolio({ lang }) {
         <section className="picks">
           <h2 className="picks-h">{t.picksH2}</h2>
           <div className="picks-row">
-            {[['huda-beauty', 0], ['cerave', 0], ['shein', 0]].map(([slug, i]) => {
+            {[['huda-beauty', 0], ['cerave', 0], ['shein', 0], ['loreal-paris', 2], ['mugler', 0], ['lancome', 0]].map(([slug, i]) => {
               const b = bySlug(slug);
               return (
-                <Link key={slug} href={brandPath(slug, lang)} className="pick">
-                  <img src={`${videos(b)[i]}.webp`} alt={`${b.name}: ${b[lang].t}`} loading="lazy" />
-                  <span><b>{b.name}</b>{t.picks[slug]}</span>
-                </Link>
+                <div className="pick" key={slug}>
+                  <Link href={brandPath(slug, lang)} className="pick-media" aria-label={`${b.name}: ${b[lang].t}`}>
+                    <UgcVideo src={videos(b)[i]} silent label={`${b.name}: ${b[lang].t}`} soundLabel={t.sound} />
+                  </Link>
+                  <span><b>{b.name}</b>{t.picks[slug]}{b.modo ? <em>{t.modos[b.modo]}</em> : null}</span>
+                </div>
               );
             })}
+          </div>
+          <div className="picks-cta">
+            <Link href={ROUTES.contact[lang]} className="btn btn--dark"><span>{t.ctaBtn}</span></Link>
           </div>
         </section>
         <h2 className="sr-h2">{t.wallH2}</h2>
@@ -295,6 +300,7 @@ export function Brand({ slug, lang }) {
             {b.campaigns ? (<div><dt>{t.facts.campaigns}</dt><dd>{b.campaigns}</dd></div>) : null}
             {b.since ? (<div><dt>{t.facts.since}</dt><dd>{b.since}</dd></div>) : null}
             {b.tipo ? (<div><dt>{t.facts.tipo}</dt><dd style={{ fontSize: '1.15rem', fontFamily: 'var(--sans)' }}>{b.tipo[lang]}</dd></div>) : null}
+            {b.modo ? (<div><dt>{t.facts.modo}</dt><dd style={{ fontSize: '1.15rem', fontFamily: 'var(--sans)' }}>{t.modos[b.modo]}</dd></div>) : null}
             {b.fav ? (<div className="wide"><dt>{t.facts.fav}</dt><dd>{b.fav[lang]}</dd></div>) : null}
           </dl>
         )}
@@ -366,7 +372,7 @@ export function About({ lang }) {
 
       {/* bloque 4: la foto se queda fija y los textos pasan por delante */}
       <div className="wrap">
-        <Pinned photo="perfil" blocks={st.slice(3).map(([, h, p]) => [h, p])} />
+        <Pinned photo="perfil" start={3} blocks={st.slice(3).map(([, h, p]) => [h, p])} />
       </div>
 
       <div style={{ textAlign: 'center', padding: '10px 0 40px' }}>
