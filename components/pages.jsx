@@ -228,7 +228,7 @@ export function Portfolio({ lang }) {
         <section className="picks">
           <h2 className="picks-h">{t.picksH2}</h2>
           <div className="picks-row">
-            {[['huda-beauty', 0], ['cerave', 0], ['shein', 0], ['loreal-paris', 2], ['mugler', 0], ['lancome', 0]].map(([slug, i]) => {
+            {[['huda-beauty', 0], ['cerave', 0], ['shein', 0], ['mugler', 0]].map(([slug, i]) => {
               const b = bySlug(slug);
               return (
                 <div className="pick" key={slug}>
