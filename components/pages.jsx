@@ -25,7 +25,7 @@ export const person = (lang) => ({
   knowsAbout: ['UGC', 'Skincare', 'Makeup', 'Fashion', 'Fragrance', 'Dance'],
   knowsLanguage: ['es', 'en'],
   address: { '@type': 'PostalAddress', addressLocality: 'Valencia', addressCountry: 'ES' },
-  areaServed: [{ '@type': 'Country', name: 'España' }, { '@type': 'Country', name: 'United Kingdom' }],
+  areaServed: 'Worldwide',
 });
 
 const website = {
@@ -128,6 +128,7 @@ export function Home({ lang }) {
             <h2 className="h2">{t.whatH2}</h2>
             <p className="lead">{t.whatP}</p>
             <p className="plain">{t.whatPlain}</p>
+            <p className="reach">{t.reach}</p>
           </div>
           <div className="what-grid">
             {t.what.map(([h, p], i) => (
