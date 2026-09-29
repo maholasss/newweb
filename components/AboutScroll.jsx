@@ -140,23 +140,41 @@ export function Full({ photo, kicker, title, text, dark = false, first = false }
   );
 }
 
-// Cierre: la foto se centra, crece hasta llenar la pantalla y se difumina
-// mientras entra el botón de contacto.
+// Cierre: LA MISMA foto del bloque fijo sigue creciendo hasta ser el fondo
+// de la página y se difumina mientras entra el botón. Arranca exactamente
+// donde estaba la foto fija (misma posición y tamaño) para que no haya salto.
 export function Finale({ photo, kicker, title, text, cta, href }) {
   const wrap = useRef(null);
   useEffect(() => {
     const w = wrap.current;
     if (!w) return;
-    if (reduced()) { w.style.setProperty('--p', '1'); return; }
-    return follow(
+    const pinImg = document.querySelector('.pin-media');
+    const measure = () => {
+      if (!pinImg) return;
+      const r = pinImg.getBoundingClientRect();
+      // la foto fija está pegada a top:100px; su hueco en el viewport es fijo
+      w.style.setProperty('--x0', `${r.left}px`);
+      w.style.setProperty('--y0', `${getComputedStyle(pinImg).top}`);
+      w.style.setProperty('--w0', `${r.width}px`);
+      w.style.setProperty('--h0', `${r.height}px`);
+    };
+    measure();
+    window.addEventListener('resize', measure);
+    if (reduced()) { w.style.setProperty('--p', '1'); return () => window.removeEventListener('resize', measure); }
+    const stop = follow(
       w,
       (r, vh) => {
         const total = r.height - vh;
         return total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 1;
       },
-      (p) => { w.style.setProperty('--p', p.toFixed(3)); },
+      (p) => {
+        w.style.setProperty('--p', p.toFixed(3));
+        // en cuanto el cierre toma el relevo, la foto fija desaparece: solo hay una
+        if (pinImg) pinImg.style.opacity = p > 0.002 ? '0' : '1';
+      },
       0.14
     );
+    return () => { stop(); window.removeEventListener('resize', measure); if (pinImg) pinImg.style.opacity = ''; };
   }, []);
   return (
     <section className="finale" ref={wrap}>
