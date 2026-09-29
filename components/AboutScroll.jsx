@@ -140,27 +140,27 @@ export function Full({ photo, kicker, title, text, dark = false, first = false }
   );
 }
 
-// Cierre: LA MISMA foto del bloque fijo sigue creciendo hasta ser el fondo
-// de la página y se difumina mientras entra el botón. Arranca exactamente
-// donde estaba la foto fija (misma posición y tamaño) para que no haya salto.
-export function Finale({ photo, kicker, title, text, cta, href }) {
+// Cierre: LA MISMA foto del bloque fijo (el div .pin-media) es la que crece
+// hasta ser el fondo de la página y se difumina mientras entra el botón.
+// No hay segunda foto: cuando el bloque fijo se acaba, la foto pasa a fija en
+// pantalla en su misma posición, y desde ahí se agranda al ritmo del scroll.
+export function Finale({ kicker, title, text, cta, href }) {
   const wrap = useRef(null);
   useEffect(() => {
     const w = wrap.current;
-    if (!w) return;
-    const pinImg = document.querySelector('.pin-media');
+    const pin = document.querySelector('.pin');
+    const img = document.querySelector('.pin-media');
+    if (!w || !pin || !img) return;
+    if (reduced()) { w.style.setProperty('--p', '1'); return; }
+    let x0 = 0, y0 = 100, w0 = 0, h0 = 0;
     const measure = () => {
-      if (!pinImg) return;
-      const r = pinImg.getBoundingClientRect();
-      // la foto fija está pegada a top:100px; su hueco en el viewport es fijo
-      w.style.setProperty('--x0', `${r.left}px`);
-      w.style.setProperty('--y0', `${getComputedStyle(pinImg).top}`);
-      w.style.setProperty('--w0', `${r.width}px`);
-      w.style.setProperty('--h0', `${r.height}px`);
+      const r = img.getBoundingClientRect();
+      x0 = r.left; w0 = r.width; h0 = r.height;
+      y0 = parseFloat(getComputedStyle(img).top) || 100;
     };
-    measure();
+    if (img.style.position !== 'fixed') measure();
     window.addEventListener('resize', measure);
-    if (reduced()) { w.style.setProperty('--p', '1'); return () => window.removeEventListener('resize', measure); }
+    const lerp = (a, b, k) => a + (b - a) * k;
     const stop = follow(
       w,
       (r, vh) => {
@@ -168,20 +168,29 @@ export function Finale({ photo, kicker, title, text, cta, href }) {
         return total > 0 ? Math.min(1, Math.max(0, -r.top / total)) : 1;
       },
       (p) => {
+        const vh = window.innerHeight, vw = window.innerWidth;
+        const pr = pin.getBoundingClientRect();
+        const fr = w.getBoundingClientRect();
+        // la foto se suelta del bloque en cuanto éste ya no puede sujetarla
+        const free = pr.bottom <= y0 + h0 + 1;
+        if (!free) {
+          if (img.style.position === 'fixed') img.style.cssText = '';
+          w.style.setProperty('--p', '0');
+          return;
+        }
         w.style.setProperty('--p', p.toFixed(3));
-        // en cuanto el cierre toma el relevo, la foto fija desaparece: solo hay una
-        if (pinImg) pinImg.style.opacity = p > 0.002 ? '0' : '1';
+        const k = Math.min(1, p * 2);           // 0 = tamaño original, 1 = pantalla completa
+        const fade = Math.max(0, p * 2 - 1);    // segunda mitad: desenfoque y velo
+        const past = Math.min(0, fr.bottom - vh); // al acabar el cierre, se va con la página
+        img.style.cssText = `position:fixed;z-index:0;margin:0;left:${lerp(x0, 0, k)}px;top:${lerp(y0, 0, k) + past}px;width:${lerp(w0, vw, k)}px;height:${lerp(h0, vh, k)}px;border-radius:${26 * (1 - k)}px;filter:blur(${14 * fade}px);--veil:${(0.55 * fade).toFixed(3)}`;
       },
       0.14
     );
-    return () => { stop(); window.removeEventListener('resize', measure); if (pinImg) pinImg.style.opacity = ''; };
+    return () => { stop(); window.removeEventListener('resize', measure); img.style.cssText = ''; };
   }, []);
   return (
     <section className="finale" ref={wrap}>
       <div className="finale-stick">
-        <div className="finale-bg">
-          <img src={`/fotos/${photo}.avif`} alt="" loading="lazy" />
-        </div>
         <div className="finale-text">
           {kicker && <p className="eyebrow">{kicker}</p>}
           <h2>{title}</h2>

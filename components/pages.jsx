@@ -377,7 +377,7 @@ export function About({ lang }) {
       </div>
 
       {/* cierre: la foto se centra, crece y se difumina mientras entra el botón */}
-      <Finale photo="perfil" kicker="05" title={st[5][1]} text={st[5][2]} cta={t.ctaBtn} href={ROUTES.contact[lang]} />
+      <Finale kicker="05" title={st[5][1]} text={st[5][2]} cta={t.ctaBtn} href={ROUTES.contact[lang]} />
       <p className="credit credit--video" style={{ paddingBottom: 70 }}>
         {t.photoBy} <a href={CREDIT} target="_blank" rel="noopener">Gorka Di Capitán</a>
       </p>
