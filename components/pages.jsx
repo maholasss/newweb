@@ -139,6 +139,17 @@ export function Home({ lang }) {
               </article>
             ))}
           </div>
+          <div className="packs">
+            <div className="packs-head">
+              <h3>{t.packsH2}</h3>
+              <p>{t.packsP}</p>
+            </div>
+            <ul className="packs-list">
+              {t.packs.map(([h, p]) => (
+                <li key={h} className="reveal"><b>{h}</b><span>{p}</span></li>
+              ))}
+            </ul>
+          </div>
           <div className="steps">
             {t.steps.map(([h, p], i) => (
               <div className="step reveal" key={h} style={{ transitionDelay: `${i * 0.08}s` }}>

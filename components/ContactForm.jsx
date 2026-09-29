@@ -10,7 +10,7 @@ export default function ContactForm({ lang }) {
 
   const mailto = (d) => {
     const subject = `${lang === 'en' ? 'Collaboration' : 'Colaboración'} · ${d.get('brand') || d.get('name')}`;
-    const body = `${d.get('msg')}\n\n${d.get('name')}${d.get('brand') ? ` · ${d.get('brand')}` : ''}\n${d.get('email') || ''}`;
+    const body = `${d.get('msg')}\n\n${[d.get('sector'), d.get('goal'), d.get('when'), d.get('budget')].filter(Boolean).join(' · ')}\n\n${d.get('name')}${d.get('brand') ? ` · ${d.get('brand')}` : ''}\n${d.get('email') || ''}`;
     window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
@@ -28,6 +28,10 @@ export default function ContactForm({ lang }) {
           nombre: d.get('name'),
           marca: d.get('brand'),
           email: d.get('email'),
+          sector: d.get('sector'),
+          objetivo: d.get('goal'),
+          plazo: d.get('when'),
+          presupuesto: d.get('budget'),
           mensaje: d.get('msg'),
         }),
       });
@@ -54,6 +58,14 @@ export default function ContactForm({ lang }) {
       <label><span>{f.name}</span><input name="name" autoComplete="name" required /></label>
       <label><span>{f.email}</span><input name="email" type="email" autoComplete="email" required /></label>
       <label><span>{f.brand} <em>({f.optional})</em></span><input name="brand" autoComplete="organization" /></label>
+      <div className="form-row">
+        <label><span>{f.sector}</span><select name="sector" defaultValue="">{[''].concat(f.sectors).map((o) => <option key={o} value={o}>{o || '…'}</option>)}</select></label>
+        <label><span>{f.goal}</span><select name="goal" defaultValue="">{[''].concat(f.goals).map((o) => <option key={o} value={o}>{o || '…'}</option>)}</select></label>
+      </div>
+      <div className="form-row">
+        <label><span>{f.when}</span><select name="when" defaultValue="">{[''].concat(f.whens).map((o) => <option key={o} value={o}>{o || '…'}</option>)}</select></label>
+        <label><span>{f.budget}</span><select name="budget" defaultValue="">{[''].concat(f.budgets).map((o) => <option key={o} value={o}>{o || '…'}</option>)}</select></label>
+      </div>
       <label><span>{f.msg}</span><textarea name="msg" placeholder={f.msgHint} required /></label>
       <button type="submit" className="btn btn--dark" disabled={state === 'sending'}>
         <span>{state === 'sending' ? f.sending : f.send}</span>
