@@ -69,9 +69,9 @@ export function Footer({ lang }) {
               <Link href={r('contact')}>{t.nav.contact}</Link>
             </div>
             <div>
-              <a href={IG} target="_blank" rel="noopener">Instagram</a>
-              <a href={TIKTOK} target="_blank" rel="noopener">TikTok</a>
-              <a href={YOUTUBE} target="_blank" rel="noopener">YouTube</a>
+              <a href={IG} target="_blank" rel="noopener">Instagram · @maholasss</a>
+              <a href={TIKTOK} target="_blank" rel="noopener">TikTok · @maholasss</a>
+              <a href={YOUTUBE} target="_blank" rel="noopener">YouTube · @maholasss</a>
               <a href={FACEBOOK} target="_blank" rel="noopener">Facebook</a>
               <a href={`mailto:${EMAIL}`}>Email</a>
             </div>
