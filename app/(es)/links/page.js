@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { SITE, EMAIL, IG, TIKTOK, YOUTUBE, FACEBOOK, CREDIT } from '@/lib/site';
+import { SITE, EMAIL, IG, TIKTOK, YOUTUBE, FACEBOOK, CREDIT, CREDIT_ES } from '@/lib/site';
 
 export const metadata = {
   title: 'Mahola · Enlaces',
@@ -43,7 +43,7 @@ export default function Page() {
         })}
       </nav>
       <p className="links-credit">
-        Fotografía, vídeo y web por <a href={CREDIT} target="_blank" rel="noopener">Gorka Di Capitán</a>
+        Fotografía, vídeo y web por <a href={CREDIT_ES} target="_blank" rel="noopener">Gorka Di Capitán</a> (<a href={CREDIT_ES} target="_blank" rel="noopener">España</a> · <a href={CREDIT} target="_blank" rel="noopener">UK</a>)
       </p>
     </main>
   );

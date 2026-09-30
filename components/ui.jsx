@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { BRANDS, CATS, bySlug } from '@/lib/brands';
 import { LOGOS } from '@/lib/logos';
-import { T, ROUTES, EMAIL, IG, TIKTOK, YOUTUBE, FACEBOOK, CREDIT } from '@/lib/site';
+import { T, ROUTES, EMAIL, IG, TIKTOK, YOUTUBE, FACEBOOK, CREDIT, CREDIT_ES, creditFor } from '@/lib/site';
 import Glow from './Glow';
 import MobileMenu from './MobileMenu';
 import BackToPortfolio from './BackToPortfolio';
@@ -79,7 +79,7 @@ export function Footer({ lang }) {
         </div>
         <div className="foot-end">
           <span>© {new Date().getFullYear()} Mahola · {t.footer.rights}</span>
-          <span><Link href={lang === 'en' ? '/en/privacy' : '/privacidad'}>{lang === 'en' ? 'Privacy' : 'Privacidad'}</Link> · {t.footer.by} <a href={CREDIT} target="_blank" rel="noopener">Gorka Di Capitán</a></span>
+          <span><Link href={lang === 'en' ? '/en/privacy' : '/privacidad'}>{lang === 'en' ? 'Privacy' : 'Privacidad'}</Link> · {t.footer.by} <a href={creditFor(lang)} target="_blank" rel="noopener">Gorka Di Capitán</a> (<a href={CREDIT_ES} target="_blank" rel="noopener">{lang === 'en' ? 'Spain' : 'España'}</a> · <a href={CREDIT} target="_blank" rel="noopener">UK</a>)</span>
         </div>
       </div>
     </footer>

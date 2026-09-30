@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { preload } from 'react-dom';
 import { BRANDS, FEATURED, bySlug, videos, isoDuration } from '@/lib/brands';
-import { T, ROUTES, SITE, EMAIL, IG, TIKTOK, YOUTUBE, FACEBOOK, CREDIT, brandPath } from '@/lib/site';
+import { T, ROUTES, SITE, EMAIL, IG, TIKTOK, YOUTUBE, FACEBOOK, CREDIT, CREDIT_ES, creditFor, brandPath } from '@/lib/site';
 import { Mark, Trusted, Cta, JsonLd, catLabel } from './ui';
 import UgcVideo from './UgcVideo';
 import Wall from './Wall';
@@ -34,10 +34,10 @@ const website = {
   url: SITE,
   name: 'Mahola',
   inLanguage: ['es', 'en'],
-  creator: { '@type': 'Person', name: 'Gorka Di Capitán', url: CREDIT },
+  creator: { '@type': 'Person', name: 'Gorka Di Capitán', url: CREDIT, sameAs: [CREDIT, CREDIT_ES] },
 };
 
-const gorka = { '@type': 'Person', name: 'Gorka Di Capitán', url: CREDIT };
+const gorka = { '@type': 'Person', name: 'Gorka Di Capitán', url: CREDIT, sameAs: [CREDIT, CREDIT_ES] };
 
 const videoLd = (b, lang) =>
   videos(b).map((v, i) => ({
@@ -303,7 +303,7 @@ export function Brand({ slug, lang }) {
             ))}
           </div>
           {b.videoCredit && (
-            <p className="credit credit--video">{t.videoBy} <a href={CREDIT} target="_blank" rel="noopener">Gorka Di Capitán</a></p>
+            <p className="credit credit--video">{t.videoBy} <a href={creditFor(lang)} target="_blank" rel="noopener">Gorka Di Capitán</a></p>
           )}
         </section>
         <h2 className="sr-h2">{t.brandVids}</h2>
