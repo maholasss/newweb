@@ -23,7 +23,8 @@ export default function Page() {
           <p><strong>Cuánto tiempo.</strong> Mientras dure la conversación o la colaboración y, después, el tiempo que exija la ley para facturas y contratos.</p>
           <p><strong>Con quién se comparten.</strong> Con nadie, salvo obligación legal.</p>
           <p><strong>Tus derechos.</strong> Puedes pedir acceso, corrección, borrado, limitación u oposición escribiendo a {EMAIL}. Si crees que algo no se ha hecho bien, puedes reclamar ante la Agencia Española de Protección de Datos.</p>
-          <p><strong>Cookies.</strong> Esta web no usa cookies de seguimiento ni analítica. Solo guarda en tu navegador preferencias de uso que no salen de tu dispositivo.</p>
+          <p><strong>Cookies.</strong> Esta web no usa cookies de seguimiento ni de publicidad. Solo guarda en tu navegador preferencias de uso que no salen de tu dispositivo.</p>
+          <p><strong>Alojamiento y estadísticas.</strong> La web está alojada en Vercel, que registra las peticiones al servidor (dirección IP, página y hora) durante un tiempo limitado para poder servir la página y protegerla. Además uso Google Search Console para saber con qué búsquedas aparece la web en Google: esos datos los recoge Google de su propio buscador, son agregados y no identifican a ningún visitante. Ninguna de las dos herramientas coloca cookies en tu navegador.</p>
         </div>
       </div>
     </Shell>

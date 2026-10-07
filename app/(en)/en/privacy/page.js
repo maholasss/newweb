@@ -23,7 +23,8 @@ export default function Page() {
           <p><strong>For how long.</strong> While the conversation or collaboration lasts and, afterwards, for as long as the law requires for invoices and contracts.</p>
           <p><strong>Who it is shared with.</strong> Nobody, unless the law requires it.</p>
           <p><strong>Your rights.</strong> You can ask for access, correction, deletion, restriction or objection by writing to {EMAIL}. If you think something was mishandled, you can complain to the Spanish Data Protection Agency (AEPD).</p>
-          <p><strong>Cookies.</strong> This website uses no tracking or analytics cookies. It only keeps usage preferences in your browser, which never leave your device.</p>
+          <p><strong>Cookies.</strong> This website uses no tracking or advertising cookies. It only keeps usage preferences in your browser, which never leave your device.</p>
+          <p><strong>Hosting and statistics.</strong> The site is hosted on Vercel, which logs server requests (IP address, page and time) for a limited period in order to serve and protect the site. I also use Google Search Console to see which searches bring the site up on Google: that data is collected by Google from its own search engine, is aggregated and does not identify any visitor. Neither tool places cookies in your browser.</p>
         </div>
       </div>
     </Shell>
