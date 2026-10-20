@@ -95,6 +95,7 @@ export default function App() {
   const lock = useCallback(async () => {
     await flush();
     S.disarm();
+    V.forgetSession();
     session.current = null;
     latest.current = null;
     setData(null);
@@ -119,7 +120,7 @@ export default function App() {
 
   // Se bloquea sola al salir de la app o tras un rato sin tocarla.
   const unlocked = !!data;
-  const lockMin = data?.settings.lockMin ?? 1;
+  const lockMin = data?.settings.lockMin ?? -1;
   useEffect(() => {
     if (!unlocked) return;
     const onVis = () => {
@@ -128,7 +129,7 @@ export default function App() {
         flush();
       } else {
         setToday(todayKey());
-        if (hiddenAt.current && Date.now() - hiddenAt.current >= lockMin * 60000) lock();
+        if (lockMin >= 0 && hiddenAt.current && Date.now() - hiddenAt.current >= lockMin * 60000) lock();
         hiddenAt.current = 0;
         lastAct.current = Date.now();
       }
@@ -136,7 +137,7 @@ export default function App() {
     const act = () => (lastAct.current = Date.now());
     const tick = setInterval(() => {
       setToday(todayKey());
-      if (Date.now() - lastAct.current >= Math.max(lockMin, 5) * 60000) lock();
+      if (Date.now() - lastAct.current >= (lockMin >= 0 ? Math.max(lockMin, 5) * 60000 : 7 * 86400000)) lock();
     }, 20000);
     document.addEventListener('visibilitychange', onVis);
     window.addEventListener('pagehide', flush);
@@ -191,11 +192,24 @@ export default function App() {
     dirty.current = false;
     V.wipe();
     S.disarm();
+    V.forgetSession();
     setData(null);
     setTab('today');
   }, []);
 
-  if (!data) return <Lock onOpen={open} />;
+  // Sesión recordada: entra sola durante 7 días sin pedir la contraseña
+  const [resuming, setResuming] = useState(true);
+  useEffect(() => {
+    let alive = true;
+    V.resumeSession().then((r) => {
+      if (!alive) return;
+      if (r) { S.armWith(r.cloud); open(r); }
+      setResuming(false);
+    });
+    return () => { alive = false; };
+  }, [open]);
+
+  if (!data) return resuming ? null : <Lock onOpen={open} />;
 
   const title = { today: 'Hoy', cal: 'Calendario', stats: 'Resumen', set: 'Ajustes' }[tab];
   const go = (t) => {

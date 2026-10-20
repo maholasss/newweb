@@ -76,8 +76,9 @@ export default function Lock({ onOpen }) {
       const res = await V.unlock(user, pass, record);
       if (backup) V.adopt(backup);
       set(FAILS, 0);
-      await S.arm(user, pass);
+      const creds = await S.arm(user, pass);
       if (!cloud || (record.at || 0) > (cloud.at || 0)) S.push(record).catch(() => {});
+      await V.rememberSession(res.session, creds);
       leave(() => onOpen(res));
     } catch {
       const fails = get(FAILS) + 1;
@@ -98,8 +99,9 @@ export default function Lock({ onOpen }) {
     setMsg('');
     try {
       const data = emptyData();
-      await S.arm(user, pass);
+      const creds = await S.arm(user, pass);
       const session = await V.create(user, pass, data);
+      await V.rememberSession(session, creds);
       leave(() => onOpen({ session, data }));
     } catch {
       setMsg('No se ha podido guardar en este dispositivo. Si estás en navegación privada, ábrela en una ventana normal.');

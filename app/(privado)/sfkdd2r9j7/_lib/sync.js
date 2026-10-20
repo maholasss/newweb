@@ -16,7 +16,8 @@ async function credentials(user, pass) {
 }
 
 let creds = null; // se calcula al entrar y se olvida al bloquear
-export async function arm(user, pass) { creds = await credentials(user, pass); }
+export async function arm(user, pass) { creds = await credentials(user, pass); return creds; }
+export function armWith(c) { creds = c || null; }
 export function disarm() { creds = null; }
 export const armed = () => !!creds;
 

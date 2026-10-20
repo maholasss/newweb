@@ -35,7 +35,7 @@ function ics(starts) {
   return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Luna//ES', 'CALSCALE:GREGORIAN', ...events, 'END:VCALENDAR'].join('\r\n');
 }
 
-const LOCKS = [[0, 'Al salir'], [1, '1 min'], [5, '5 min'], [15, '15 min']];
+const LOCKS = [[-1, 'Nunca'], [0, 'Al salir'], [5, '5 min'], [15, '15 min']];
 
 export default function Settings({ s, data, today, setSettings, exportBackup, restored, changePass, wipeAll, lock }) {
   const st = data.settings;
@@ -129,7 +129,7 @@ export default function Settings({ s, data, today, setSettings, exportBackup, re
         <div className="setting col">
           <div>
             <b>Bloquear al salir de la app</b>
-            <small>Y siempre tras {Math.max(st.lockMin, 5)} minutos sin tocarla</small>
+            <small>{st.lockMin < 0 ? 'La sesión se queda abierta 7 días; después vuelve a pedir la contraseña' : `Y siempre tras ${Math.max(st.lockMin, 5)} minutos sin tocarla`}</small>
           </div>
           <div className="segmented" role="radiogroup" aria-label="Bloquear al salir">
             {LOCKS.map(([v, l]) => (

@@ -100,3 +100,46 @@ export function askPersistence() {
     navigator.storage?.persist?.();
   } catch {}
 }
+
+// Sesión recordada: la clave de cifrado (que el navegador no deja extraer) y el
+// acceso a la nube se guardan en IndexedDB durante 7 días, así no pide la
+// contraseña cada vez. Bloquear la app los borra.
+const SESSION_DAYS = 7;
+function idb() {
+  return new Promise((ok, ko) => {
+    const r = indexedDB.open('luna-session', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('s');
+    r.onsuccess = () => ok(r.result);
+    r.onerror = () => ko(r.error);
+  });
+}
+async function idbPut(v) {
+  const db = await idb();
+  await new Promise((ok, ko) => { const t = db.transaction('s', 'readwrite'); t.objectStore('s').put(v, 'cur'); t.oncomplete = ok; t.onerror = () => ko(t.error); });
+  db.close();
+}
+async function idbGet() {
+  const db = await idb();
+  const v = await new Promise((ok, ko) => { const r = db.transaction('s').objectStore('s').get('cur'); r.onsuccess = () => ok(r.result); r.onerror = () => ko(r.error); });
+  db.close();
+  return v;
+}
+export async function rememberSession(session, cloud) {
+  try { await idbPut({ key: session.key, kdf: session.kdf, cloud, exp: Date.now() + SESSION_DAYS * 86400000 }); } catch {}
+}
+export async function forgetSession() {
+  try { await idbPut(null); } catch {}
+}
+// Devuelve { session, data, cloud } si hay sesión viva y la copia local abre con ella.
+export async function resumeSession() {
+  try {
+    const s = await idbGet();
+    if (!s || !s.key || s.exp < Date.now()) return null;
+    const record = readVault();
+    if (!record) return null;
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromB64(record.iv), additionalData: AAD }, s.key, fromB64(record.ct));
+    return { session: { key: s.key, kdf: s.kdf }, data: JSON.parse(td.decode(plain)), cloud: s.cloud || null };
+  } catch {
+    return null;
+  }
+}

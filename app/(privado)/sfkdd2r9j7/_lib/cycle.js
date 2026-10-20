@@ -30,7 +30,7 @@ export const fmtLong = (k) => fmt(k, { weekday: 'long', day: 'numeric', month: '
 export const BLEED = new Set(['light', 'medium', 'heavy']);
 export const isBleed = (day) => BLEED.has(day?.flow);
 
-export const DEFAULT_SETTINGS = { cycle: 28, period: 5, luteal: 14, lockMin: 1, hormonal: false, lastBackup: null };
+export const DEFAULT_SETTINGS = { cycle: 28, period: 5, luteal: 14, lockMin: -1, hormonal: false, lastBackup: null };
 export const emptyData = () => ({ v: 1, settings: { ...DEFAULT_SETTINGS }, days: {} });
 export const normalize = (d) => ({ ...emptyData(), ...d, settings: { ...DEFAULT_SETTINGS, ...(d?.settings || {}) }, days: d?.days || {} });
 
@@ -111,7 +111,7 @@ export function summarize(data, today) {
     }
   }
 
-  const windows = fertile.map((ov) => ({ ov, start: addDays(ov, -5), end: addDays(ov, 1) }));
+  const windows = fertile.map((ov) => ({ ov, start: addDays(ov, -6), end: addDays(ov, 2) }));
 
   let phase = 'none';
   if (last) {
