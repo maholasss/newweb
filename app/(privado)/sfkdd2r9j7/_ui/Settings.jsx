@@ -159,6 +159,7 @@ export default function Settings({ s, data, today, setSettings, exportBackup, re
 
       <section className="card">
         <h2 className="card-title">Copia de seguridad</h2>
+        <p className="msg" role="status">Cada cambio se guarda también en la nube, cifrado con tu contraseña. Si entras en otro móvil con el mismo usuario y contraseña, aparece todo.</p>
         <p>Tus datos solo están en este dispositivo. Guarda una copia de vez en cuando: sirve para no perder nada y para pasarlo a otro móvil o al Mac. La copia va cifrada con tu contraseña.</p>
         <p className="muted">{st.lastBackup ? `Última copia: ${fmtShort(st.lastBackup)} ${st.lastBackup.slice(0, 4)}` : 'Aún no has hecho ninguna copia.'}</p>
         <div className="row-btns">

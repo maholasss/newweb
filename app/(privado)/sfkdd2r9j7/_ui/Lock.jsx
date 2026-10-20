@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import * as V from '../_lib/vault';
+import * as S from '../_lib/sync';
 import { emptyData } from '../_lib/cycle';
 import { Moon } from './icons';
 
@@ -56,18 +57,27 @@ export default function Lock({ onOpen }) {
     if (!user.trim() || !pass) return setMsg('Escribe tu usuario y tu contraseña.');
 
     if (step === 'new') return createNew();
-    const record = backup || V.readVault();
+    let record = backup || V.readVault();
+    setBusy(true);
+    setMsg('');
+    // Si en la nube hay una copia más nueva (o aquí no hay ninguna), se usa esa
+    let cloud = null;
+    try { cloud = await S.pull(user, pass); } catch {}
+    if (cloud && (!record || (cloud.at || 0) > (record.at || 0))) {
+      try { await V.unlock(user, pass, cloud); record = cloud; V.adopt(cloud); } catch {}
+    }
     if (!record) {
+      setBusy(false);
       setStep('new');
       setMsg('');
       return;
     }
-    setBusy(true);
-    setMsg('');
     try {
       const res = await V.unlock(user, pass, record);
       if (backup) V.adopt(backup);
       set(FAILS, 0);
+      await S.arm(user, pass);
+      if (!cloud || (record.at || 0) > (cloud.at || 0)) S.push(record).catch(() => {});
       leave(() => onOpen(res));
     } catch {
       const fails = get(FAILS) + 1;
@@ -88,6 +98,7 @@ export default function Lock({ onOpen }) {
     setMsg('');
     try {
       const data = emptyData();
+      await S.arm(user, pass);
       const session = await V.create(user, pass, data);
       leave(() => onOpen({ session, data }));
     } catch {

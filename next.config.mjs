@@ -10,7 +10,7 @@ const csp = [
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
-  `connect-src 'self'${dev ? ' ws: wss:' : ''}`,
+  `connect-src 'self' https://luna-sync.manjelier.workers.dev${dev ? ' ws: wss:' : ''}`,
   "manifest-src 'self'",
   "worker-src 'self'",
   "object-src 'none'",

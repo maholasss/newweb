@@ -8,6 +8,7 @@ const ITER = 600000;
 const AAD = new TextEncoder().encode('luna:v1');
 const te = new TextEncoder();
 const td = new TextDecoder();
+import { push, armed } from './sync';
 
 export function toB64(buf) {
   const b = new Uint8Array(buf);
@@ -57,7 +58,10 @@ export async function seal(session, data) {
 }
 
 export async function save(session, data) {
-  write(await seal(session, data));
+  const record = await seal(session, data);
+  write(record);
+  // La nube va después y nunca bloquea: si falla, el dato ya está a salvo en el móvil
+  if (armed()) push(record).catch(() => {});
 }
 
 // Devuelve { session, data } o lanza si usuario/contraseña no son los de esta copia.

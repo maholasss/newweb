@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as V from '../_lib/vault';
+import * as S from '../_lib/sync';
 import { normalize, summarize, todayKey } from '../_lib/cycle';
 import Lock from './Lock';
 import Today from './Today';
@@ -93,6 +94,7 @@ export default function App() {
 
   const lock = useCallback(async () => {
     await flush();
+    S.disarm();
     session.current = null;
     latest.current = null;
     setData(null);
@@ -179,6 +181,7 @@ export default function App() {
   const changePass = useCallback(async (curUser, curPass, newUser, newPass) => {
     await flush();
     await V.unlock(curUser, curPass); // lanza si no es la actual
+    await S.arm(newUser || curUser, newPass);
     session.current = await V.create(newUser || curUser, newPass, latest.current);
   }, [flush]);
 
@@ -187,6 +190,7 @@ export default function App() {
     latest.current = null;
     dirty.current = false;
     V.wipe();
+    S.disarm();
     setData(null);
     setTab('today');
   }, []);
