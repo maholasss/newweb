@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react';
 import * as V from '../_lib/vault';
+import * as S from '../_lib/sync';
 import { addDays, fmtShort } from '../_lib/cycle';
 import { Icon } from './icons';
 import { deliver } from '../_lib/files';
@@ -159,8 +160,14 @@ export default function Settings({ s, data, today, setSettings, exportBackup, re
 
       <section className="card">
         <h2 className="card-title">Copia de seguridad</h2>
-        <p className="msg" role="status">Cada cambio se guarda también en la nube, cifrado con tu contraseña. Si entras en otro móvil con el mismo usuario y contraseña, aparece todo.</p>
-        <p>Tus datos solo están en este dispositivo. Guarda una copia de vez en cuando: sirve para no perder nada y para pasarlo a otro móvil o al Mac. La copia va cifrada con tu contraseña.</p>
+        <label className="setting switch">
+          <div>
+            <b>Copia en la nube</b>
+            <small>{st.cloud ? 'Cada cambio se sube cifrado con tu contraseña. En otro móvil, entra con el mismo usuario y aparece todo.' : 'Apagada: tus datos solo están en este dispositivo.'}</small>
+          </div>
+          <input type="checkbox" role="switch" checked={!!st.cloud} onChange={(e) => { setSettings({ cloud: e.target.checked }); if (!e.target.checked) S.remove().catch(() => {}); }} />
+        </label>
+        <p>Guarda además una copia en Archivos de vez en cuando: sirve para no perder nada y para pasarlo a otro móvil o al Mac. Va cifrada con tu contraseña.</p>
         <p className="muted">{st.lastBackup ? `Última copia: ${fmtShort(st.lastBackup)} ${st.lastBackup.slice(0, 4)}` : 'Aún no has hecho ninguna copia.'}</p>
         <div className="row-btns">
           <button type="button" className="btn primary" onClick={doExport}><Icon name="share" size={18} />Guardar copia</button>
@@ -197,7 +204,7 @@ export default function Settings({ s, data, today, setSettings, exportBackup, re
 
       <section className="card soft">
         <h2 className="card-title"><Icon name="shield" size={18} /> Privacidad</h2>
-        <p>Todo se guarda cifrado (AES-256) solo en este dispositivo. No se envía a ningún servidor y nadie más puede leerlo. La contraseña no se guarda en ningún sitio: si la olvidas, no hay forma de recuperar los datos.</p>
+        <p>Todo se guarda cifrado (AES-256) en este dispositivo. Solo si activas la copia en la nube se sube, ya cifrada, a un servidor privado que no puede leerla. La contraseña no se guarda en ningún sitio: si la olvidas, no hay forma de recuperar los datos.</p>
       </section>
 
       <button type="button" className="btn danger wide" onClick={wipe}><Icon name="trash" size={18} />Borrar todos mis datos</button>

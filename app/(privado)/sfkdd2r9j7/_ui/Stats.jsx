@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { addDays, diff, fmtShort, patterns } from '../_lib/cycle';
-import { DEVIATIONS, label } from '../_lib/catalog';
+import { STATE, TREND, label } from '../_lib/catalog';
 import { Icon } from './icons';
 import Report from './Report';
 import CountUp from './CountUp';
@@ -52,6 +52,79 @@ function CycleBars({ s, today }) {
           : 'Toca un ciclo para ver el detalle.'}
       </p>
       {rows.length > 8 && <button type="button" className="link small" onClick={() => setAll(!all)}>{all ? 'Ver solo los últimos' : `Ver los ${rows.length} ciclos`}</button>}
+    </section>
+  );
+}
+
+// Cómo han ido cambiando tus ciclos: línea de duración de ciclo y de regla sobre la banda normal
+function TrendChart({ s }) {
+  const [sel, setSel] = useState(null);
+  const rows = s.cycles.filter((c) => c.length && c.length >= 15 && c.length <= 90).slice(-12);
+  if (rows.length < 2) return null;
+  const W = 320, H = 190, L = 30, Rr = 12, T = 12, B = 26;
+  const lo = Math.min(14, ...rows.map((c) => c.length)) - 2;
+  const hi = Math.max(40, ...rows.map((c) => c.length)) + 2;
+  const x = (i) => L + (i / (rows.length - 1)) * (W - L - Rr);
+  const y = (v) => T + (1 - (v - lo) / (hi - lo)) * (H - T - B);
+  const path = (f) => rows.map((c, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)},${y(f(c)).toFixed(1)}`).join(' ');
+  const picked = rows.find((c) => c.start === sel) || rows[rows.length - 1];
+  const ticks = [20, 28, 36, 44].filter((t) => t > lo && t < hi);
+  return (
+    <section className="card">
+      <h2 className="card-title">Tendencia</h2>
+      <div className="chart-legend" aria-hidden="true">
+        <span><i className="sw rest" />Ciclo</span>
+        <span><i className="sw period" />Regla</span>
+        <span><i className="sw band" />Normal (24–38)</span>
+      </div>
+      <svg className="temp trend" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Duración de tus últimos ${rows.length} ciclos`}>
+        <rect x={L} y={y(38)} width={W - L - Rr} height={y(24) - y(38)} className="band" />
+        {ticks.map((t) => (
+          <g key={t}>
+            <line x1={L} x2={W - Rr} y1={y(t)} y2={y(t)} className="gl" />
+            <text x={L - 6} y={y(t) + 4} className="tick" textAnchor="end">{t}</text>
+          </g>
+        ))}
+        <line x1={L} x2={W - Rr} y1={y(s.avgCycle)} y2={y(s.avgCycle)} className="avg" />
+        <text x={L} y={H - 6} className="tick">{fmtShort(rows[0].start)}</text>
+        <text x={W - Rr} y={H - 6} className="tick" textAnchor="end">{fmtShort(rows[rows.length - 1].start)}</text>
+        <path d={path((c) => c.periodLength)} className="line period" pathLength="100" />
+        <path d={path((c) => c.length)} className="line" pathLength="100" />
+        {rows.map((c, i) => (
+          <g key={c.start} onClick={() => setSel(c.start)} className="pt">
+            <circle cx={x(i)} cy={y(c.length)} r="14" className="hit" />
+            <circle cx={x(i)} cy={y(c.periodLength)} r={3.5} className="dot period" />
+            <circle cx={x(i)} cy={y(c.length)} r={c.start === picked.start ? 6 : 4.5} className="dot" />
+          </g>
+        ))}
+      </svg>
+      <p className="readout" aria-live="polite">Ciclo del {fmtShort(picked.start)}: {days(picked.length)}, regla de {days(picked.periodLength)}.</p>
+      {s.trend && <p className="hint">{TREND[s.trend]}{s.trend !== 'stable' ? ': los últimos tres frente a los tres anteriores.' : '.'}</p>}
+    </section>
+  );
+}
+
+// "Así está tu ciclo": semáforo de cada medida frente a lo normal
+function Assessment({ rows }) {
+  const [open, setOpen] = useState(null);
+  const bad = rows.filter((r) => r.state && r.state !== 'ok').length;
+  return (
+    <section className="card">
+      <h2 className="card-title">Así está tu ciclo</h2>
+      <p className="muted">{rows.every((r) => !r.state) ? 'Con tus primeras reglas apuntadas, aquí verás qué está dentro de lo normal.' : bad ? `${bad} ${bad === 1 ? 'cosa' : 'cosas'} para revisar.` : 'Todo dentro de lo normal.'}</p>
+      <ul className="assess">
+        {rows.map((r) => (
+          <li key={r.id} className={r.state || 'none'}>
+            <button type="button" aria-expanded={open === r.id} onClick={() => setOpen(open === r.id ? null : r.id)}>
+              <i className="light" aria-hidden="true" />
+              <span><b>{r.title}</b>{r.value && <small>{r.value}</small>}</span>
+              <em>{r.state ? STATE[r.state] : 'Sin datos'}</em>
+            </button>
+            {open === r.id && <p>{r.state && r.state !== 'ok' ? `${r.text} ` : ''}{r.normal}</p>}
+          </li>
+        ))}
+      </ul>
+      <p className="fine">Son orientaciones a partir de lo que apuntas, no un diagnóstico. Lo normal sigue los criterios de la FIGO.</p>
     </section>
   );
 }
@@ -149,16 +222,8 @@ export default function Stats({ s, data, today }) {
       </div>
       {s.measured < 3 && <p className="fine">Hasta tener tres ciclos completos, la media usa lo que pusiste en Ajustes.</p>}
 
-      {s.deviations.map((id) => (
-        <section key={id} className="card alert">
-          <Icon name="alert" />
-          <div>
-            <h2 className="card-title">{DEVIATIONS[id][0]}</h2>
-            <p>{DEVIATIONS[id][1]} Revisa que tus reglas estén bien apuntadas y, si es así, coméntalo con tu ginecóloga.</p>
-          </div>
-        </section>
-      ))}
-
+      <Assessment rows={s.assessment} />
+      <TrendChart s={s} />
       <CycleBars s={s} today={today} />
       <TempChart s={s} data={data} today={today} />
       <Patterns title="Síntomas que se repiten" list={sym} group="sym" />

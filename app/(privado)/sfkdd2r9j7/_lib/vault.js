@@ -61,7 +61,7 @@ export async function save(session, data) {
   const record = await seal(session, data);
   write(record);
   // La nube va después y nunca bloquea: si falla, el dato ya está a salvo en el móvil
-  if (armed()) push(record).catch(() => {});
+  if (armed() && data?.settings?.cloud === true) push(record).catch(() => {});
 }
 
 // Devuelve { session, data } o lanza si usuario/contraseña no son los de esta copia.

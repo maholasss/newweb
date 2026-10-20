@@ -66,7 +66,7 @@ export function chipsOf(day) {
     if (Array.isArray(v)) v.forEach((id) => out.push({ g: g.id, t: label(g.id, id) }));
     else if (v) out.push({ g: g.id, t: `${g.title}: ${label(g.id, v).toLowerCase()}` });
   }
-  if (day.temp) out.push({ g: 'temp', t: `${String(day.temp).replace('.', ',')} °C` });
+  if (day.temp) out.push({ g: 'temp', t: `${(Math.round(day.temp * 100) / 100).toFixed(2).replace('.', ',')} °C` });
   if (day.weight) out.push({ g: 'weight', t: `${String(day.weight).replace('.', ',')} kg` });
   if (day.note) out.push({ g: 'note', t: 'Nota' });
   return out;
@@ -83,6 +83,11 @@ export const PHASES = {
   late: { name: 'Retraso', text: 'Unos días de retraso son frecuentes: estrés, viajes, sueño o cambios de peso. Si has tenido relaciones sin protección, un test de embarazo ya es fiable desde el día de la falta.' },
   cycle: { name: 'Ciclo', text: 'Con anticonceptivo hormonal no hay ovulación que predecir: la app solo sigue tus sangrados y síntomas.' },
 };
+
+export const CHANCE = { high: 'Alta', medium: 'Media', low: 'Baja' };
+export const OV_SOURCE = { lh: 'confirmada por test', bbt: 'confirmada por temperatura', mucus: 'estimada por el flujo', calendar: 'estimada' };
+export const TREND = { longer: 'Tus ciclos se están alargando', shorter: 'Tus ciclos se están acortando', stable: 'Tus ciclos se mantienen estables' };
+export const STATE = { ok: 'Normal', warn: 'Revisar', bad: 'Consultar' };
 
 export const DEVIATIONS = {
   irregular: ['Ciclos irregulares', 'Entre tu ciclo más corto y el más largo de los últimos 6 meses hay 17 días o más.'],

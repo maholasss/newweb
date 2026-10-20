@@ -1,11 +1,36 @@
 'use client';
 
-import { addDays, diff, fmtLong, fmtShort, isBleed } from '../_lib/cycle';
-import { FLOW, PHASES, chipsOf } from '../_lib/catalog';
+import { useState } from 'react';
+import { addDays, diff, fmtLong, fmtShort, isBleed, hadSex } from '../_lib/cycle';
+import { FLOW, PHASES, CHANCE, OV_SOURCE, chipsOf } from '../_lib/catalog';
 import { Icon } from './icons';
 import CountUp from './CountUp';
 
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+const SEX_OPTS = [['protected', 'Con protección'], ['unprotected', 'Sin protección'], ['solo', 'En solitario']];
+
+// Corazón para apuntar relaciones en un toque, como en Flo
+function SexRow({ day, k, setDay }) {
+  const [open, setOpen] = useState(false);
+  const cur = day?.sex || [];
+  const has = hadSex(day);
+  const toggle = (id) => setDay(k, { sex: cur.includes(id) ? cur.filter((x) => x !== id) : [...cur.filter((x) => !SEX_OPTS.some(([o]) => o === x)), id] });
+  return (
+    <div className="sex-row">
+      <button type="button" className={`heart ${has ? 'on' : ''}`} aria-pressed={has} aria-expanded={open} onClick={() => setOpen(!open)}>
+        <Icon name="heart" size={20} />
+        {has ? SEX_OPTS.find(([o]) => cur.includes(o))?.[1] : 'Relaciones'}
+      </button>
+      {open && (
+        <div className="chips">
+          {SEX_OPTS.map(([id, l]) => (
+            <button key={id} type="button" className={`chip sex ${cur.includes(id) ? 'on' : ''}`} aria-pressed={cur.includes(id)} onClick={() => toggle(id)}>{l}</button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function Ring({ s }) {
   const R = 104;
@@ -117,6 +142,7 @@ export default function Today({ s, data, today, setDay, openDay, editPast, goBac
         ) : (
           <p className="muted">Aún no has apuntado nada hoy.</p>
         )}
+        <SexRow day={day} k={today} setDay={setDay} />
         <button type="button" className="btn ghost wide" onClick={() => openDay(today)}>
           <Icon name="plus" size={18} />
           Síntomas, ánimo, flujo y más
@@ -133,6 +159,12 @@ export default function Today({ s, data, today, setDay, openDay, editPast, goBac
                 {s.late > 0 ? `Con ${plural(s.late, 'día', 'días')} de retraso` : s.phase === 'due' ? 'Hoy' : s.ongoing ? fmtShort(nextStart) : `${fmtShort(nextStart)} · en ${plural(s.daysToNext, 'día', 'días')}`}
               </dd>
             </div>
+            {s.late === 0 && s.phase !== 'due' && s.spread > 0 && (
+              <div>
+                <dt>Margen</dt>
+                <dd>{s.spread === 1 ? 'un día arriba o abajo' : `entre el ${fmtShort(s.nextRange[0])} y el ${fmtShort(s.nextRange[1])}`}</dd>
+              </div>
+            )}
             {!hormonal && nextWindow && (
               <>
                 <div>
@@ -141,13 +173,19 @@ export default function Today({ s, data, today, setDay, openDay, editPast, goBac
                 </div>
                 <div>
                   <dt><i className="key ovulation" />Ovulación</dt>
-                  <dd>{nextWindow.ov === today ? 'Hoy' : fmtShort(nextWindow.ov)}</dd>
+                  <dd>{nextWindow.ov === today ? 'Hoy' : fmtShort(nextWindow.ov)}{nextWindow.ov === s.ovulation && s.ovSource !== 'calendar' ? ` · ${OV_SOURCE[s.ovSource]}` : ''}</dd>
                 </div>
+                {s.chance && (
+                  <div>
+                    <dt><Icon name="heart" size={14} className={`chance ${s.chance}`} />Embarazo hoy</dt>
+                    <dd>{CHANCE[s.chance]} probabilidad</dd>
+                  </div>
+                )}
               </>
             )}
             <div>
               <dt>Tu media</dt>
-              <dd>Ciclo de {s.avgCycle} días · regla de {s.avgPeriod}</dd>
+              <dd>Ciclo de {s.avgCycle} días · regla de {s.avgPeriod}{s.lutealLearned ? ` · lútea de ${s.luteal}` : ''}</dd>
             </div>
           </dl>
           {s.measured < 3 && <p className="hint">Con tres ciclos apuntados las predicciones ya salen de tus datos reales.</p>}

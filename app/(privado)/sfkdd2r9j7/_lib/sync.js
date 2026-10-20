@@ -32,6 +32,14 @@ export async function push(record) {
   return 'ok';
 }
 
+// Borra la copia de la nube (al apagar la copia en Ajustes).
+export async function remove() {
+  if (!creds) return 'off';
+  const r = await fetch(URL_SYNC, { method: 'DELETE', headers: headers() });
+  if (!r.ok && r.status !== 404) throw new Error('sync-' + r.status);
+  return 'ok';
+}
+
 // Baja la copia de la nube para estas credenciales, o null si no hay.
 export async function pull(user, pass) {
   const c = await credentials(user, pass);

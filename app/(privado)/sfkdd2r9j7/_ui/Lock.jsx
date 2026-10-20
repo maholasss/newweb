@@ -77,7 +77,7 @@ export default function Lock({ onOpen }) {
       if (backup) V.adopt(backup);
       set(FAILS, 0);
       const creds = await S.arm(user, pass);
-      if (!cloud || (record.at || 0) > (cloud.at || 0)) S.push(record).catch(() => {});
+      if (res.data?.settings?.cloud === true && (!cloud || (record.at || 0) > (cloud.at || 0))) S.push(record).catch(() => {});
       await V.rememberSession(res.session, creds);
       leave(() => onOpen(res));
     } catch {

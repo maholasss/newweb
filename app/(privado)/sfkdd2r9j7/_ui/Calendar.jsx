@@ -14,6 +14,7 @@ function describe(mk) {
   if (mk.spot) t.push('manchado');
   if (mk.ovulation) t.push('ovulación');
   else if (mk.fertile) t.push('ventana fértil');
+  if (mk.sex) t.push('relaciones');
   if (mk.log) t.push('con registro');
   return t.length ? `, ${t.join(', ')}` : '';
 }
@@ -61,6 +62,7 @@ export default function Calendar({ s, data, today, setDay, openDay, edit, setEdi
       >
         <span className="n">{d}</span>
         <span className="marks">
+          {mk.sex && <Icon name="heart" size={9} className="m-sex" />}
           {mk.spot && <i className="m-spot" />}
           {mk.log && <i className="m-log" />}
         </span>
@@ -112,6 +114,7 @@ export default function Calendar({ s, data, today, setDay, openDay, edit, setEdi
         {!data.settings.hormonal && <span><i className="lg fertile" />Fértil</span>}
         {!data.settings.hormonal && <span><i className="lg ovulation" />Ovulación</span>}
         <span><i className="lg spot" />Manchado</span>
+        <span><Icon name="heart" size={11} className="lg-heart" />Relaciones</span>
         <span><i className="lg log" />Con notas</span>
       </section>
 

@@ -495,3 +495,48 @@ textarea { resize: vertical; min-height: 88px; display: block; }
   html.printing .report { position: absolute; inset: 0 auto auto 0; max-height: none; overflow: visible; animation: none; background: #fff; color: #000; }
   .no-print, .sheet-head { display: none !important; }
 }
+
+/* Relaciones (corazón) */
+.sex-row { display: grid; gap: 10px; }
+.heart { display: inline-flex; align-items: center; gap: 8px; justify-self: start; padding: 8px 14px 8px 10px; border-radius: 999px; border: 0; background: var(--fill); color: var(--muted); font: inherit; font-size: 15px; font-weight: 500; transition: background 0.2s, color 0.2s, transform 0.2s; }
+.heart svg { color: var(--period); }
+.heart.on { background: var(--period-soft); color: var(--period-text); }
+.heart.on svg { fill: var(--period); }
+.heart:active { transform: scale(0.96); }
+.chip.sex svg { color: var(--period); }
+.chip.sex.on { background: var(--period-strong); color: #fff; }
+.chip.sex.on svg { fill: #fff; color: #fff; }
+.chips.readonly .chip.sex { background: var(--period-soft); color: var(--period-text); }
+.m-sex { color: var(--period); fill: var(--period); width: 9px; height: 9px; }
+.day.period .m-sex { color: #fff; fill: #fff; }
+.lg-heart { color: var(--period); fill: var(--period); }
+.chance { fill: var(--line); color: var(--line); }
+.chance.medium { fill: var(--fertile); color: var(--fertile); }
+.chance.high { fill: var(--period); color: var(--period); }
+
+/* Tendencia */
+.temp .band { fill: var(--fertile-soft); opacity: 0.6; }
+.temp .avg { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 3 4; }
+.temp .line.period { stroke: var(--period); stroke-width: 1.5; }
+.temp .dot.period { fill: var(--period); }
+.sw.band { background: var(--fertile-soft); }
+
+/* Así está tu ciclo */
+.assess { list-style: none; margin: 0; padding: 0; }
+.assess li { border-top: 0.5px solid var(--line); }
+.assess li:first-child { border-top: 0; }
+.assess button { width: 100%; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; padding: 11px 0; background: none; border: 0; color: inherit; font: inherit; text-align: left; }
+.assess .light { width: 10px; height: 10px; border-radius: 50%; background: var(--line); }
+.assess .ok .light { background: #34c759; }
+.assess .warn .light { background: #ff9f0a; }
+.assess .bad .light { background: var(--period-strong); }
+.assess b { display: block; font-weight: 500; }
+.assess small { color: var(--muted); font-size: 13.5px; }
+.assess em { font-style: normal; font-size: 13.5px; color: var(--muted); font-weight: 500; }
+.assess .warn em { color: #c77700; }
+.assess .bad em { color: var(--period-text); }
+.assess p { margin: 0 0 12px 22px; font-size: 14.5px; color: var(--muted); }
+
+/* Permiso de la nube */
+.consent { display: grid; gap: 12px; padding-bottom: 24px; }
+.consent .btn { justify-content: center; }

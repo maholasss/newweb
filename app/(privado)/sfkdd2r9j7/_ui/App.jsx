@@ -10,6 +10,7 @@ import Calendar from './Calendar';
 import Stats from './Stats';
 import Settings from './Settings';
 import DaySheet from './DaySheet';
+import Sheet from './Sheet';
 import { Icon } from './icons';
 import { deliver } from '../_lib/files';
 
@@ -261,6 +262,16 @@ export default function App() {
         ))}
       </nav>
 
+      {data.settings.cloud == null && (
+        <Sheet label="Copia en la nube" onClose={() => setSettings({ cloud: false })} head={() => <h2 className="display">¿Guardar también en la nube?</h2>}>
+          <div className="sheet-body consent">
+            <p>Si lo activas, cada cambio se sube cifrado con tu contraseña a un servidor privado. Así, si cambias de móvil o entras desde otro, aparece todo con solo iniciar sesión.</p>
+            <p className="muted">Nadie puede leerlo sin tu contraseña, ni siquiera quien gestiona el servidor. Puedes apagarlo cuando quieras en Ajustes y la copia se borra.</p>
+            <button type="button" className="btn primary wide" onClick={() => setSettings({ cloud: true })}><Icon name="shield" size={18} />Sí, guardar en la nube</button>
+            <button type="button" className="btn ghost wide" onClick={() => setSettings({ cloud: false })}>No, solo en este móvil</button>
+          </div>
+        </Sheet>
+      )}
       {sheet && <DaySheet k={sheet} s={summary} data={data} today={today} setDay={setDay} clearDay={clearDay} onClose={closeSheet} />}
     </div>
   );

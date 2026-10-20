@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { cycleDayOf, fmtLong } from '../_lib/cycle';
+import { SEX, cycleDayOf, fmtLong } from '../_lib/cycle';
 import { FLOW, GROUPS } from '../_lib/catalog';
 import { Icon } from './icons';
 import Sheet from './Sheet';
@@ -88,7 +88,8 @@ export default function DaySheet({ k, s, data, today, setDay, clearDay, onClose 
                   {g.items.map(([id, l]) => {
                     const on = g.multi ? (day[g.id] || []).includes(id) : day[g.id] === id;
                     return (
-                      <button key={id} type="button" className={`chip ${on ? 'on' : ''}`} aria-pressed={on} onClick={() => (g.multi ? pickMany(g.id, id) : pickOne(g.id, id))}>
+                      <button key={id} type="button" className={`chip ${g.id === 'sex' && SEX.has(id) ? 'sex' : ''} ${on ? 'on' : ''}`} aria-pressed={on} onClick={() => (g.multi ? pickMany(g.id, id) : pickOne(g.id, id))}>
+                        {g.id === 'sex' && SEX.has(id) && <Icon name="heart" size={14} />}
                         {l}
                       </button>
                     );
