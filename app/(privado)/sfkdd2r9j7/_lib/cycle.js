@@ -111,7 +111,8 @@ export function summarize(data, today) {
     }
   }
 
-  const windows = fertile.map((ov) => ({ ov, start: addDays(ov, -6), end: addDays(ov, 2) }));
+  // Ventana fértil de 10 días, con la ovulación el octavo (como Flo): 7 días antes y 2 después
+  const windows = fertile.map((ov) => ({ ov, start: addDays(ov, -7), end: addDays(ov, 2) }));
 
   let phase = 'none';
   if (last) {
