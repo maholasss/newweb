@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import * as V from '../_lib/vault';
 import * as S from '../_lib/sync';
+import * as B from '../_lib/bio';
 import { emptyData } from '../_lib/cycle';
 import { Moon } from './icons';
 
@@ -22,7 +23,7 @@ const set = (k, v) => {
   } catch {}
 };
 
-export default function Lock({ onOpen }) {
+export default function Lock({ onOpen, pending }) {
   const [user, setUser] = useState('');
   const [pass, setPass] = useState('');
   const [pass2, setPass2] = useState('');
@@ -78,7 +79,7 @@ export default function Lock({ onOpen }) {
       set(FAILS, 0);
       const creds = await S.arm(user, pass);
       if (res.data?.settings?.cloud === true && (!cloud || (record.at || 0) > (cloud.at || 0))) S.push(record).catch(() => {});
-      await V.rememberSession(res.session, creds);
+      await V.rememberSession(res.session, creds, B.enabled() ? 30 : 7);
       leave(() => onOpen(res));
     } catch {
       const fails = get(FAILS) + 1;
@@ -126,6 +127,29 @@ export default function Lock({ onOpen }) {
   }
 
   const isNew = step === 'new';
+  const [bioFail, setBioFail] = useState(false);
+  const [useBio, setUseBio] = useState(!!pending);
+
+  // Sesión recordada protegida con Face ID / Touch ID
+  async function bio() {
+    try {
+      if (await B.verify()) return leave(() => onOpen(pending));
+    } catch {}
+    setBioFail(true);
+  }
+  if (useBio && pending) {
+    return (
+      <div className={`lock ${leaving ? 'leaving' : ''}`}>
+        <div className="lock-card">
+          <Moon />
+          <h1 className="display">Luna</h1>
+          <button type="button" className="btn primary wide" onClick={bio}>Desbloquear con Face ID o huella</button>
+          {bioFail && <p className="msg" role="alert">No se ha podido verificar. Prueba otra vez o entra con tu contraseña.</p>}
+          <button type="button" className="link" onClick={() => setUseBio(false)}>Usar la contraseña</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`lock ${leaving ? 'leaving' : ''}`}>

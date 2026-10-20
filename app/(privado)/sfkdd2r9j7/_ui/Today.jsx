@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { addDays, diff, fmtLong, fmtShort, isBleed, hadSex } from '../_lib/cycle';
-import { FLOW, PHASES, CHANCE, OV_SOURCE, chipsOf } from '../_lib/catalog';
+import { FLOW, PHASES, CHANCE, OV_SOURCE, FLAGS, TIPS, chipsOf } from '../_lib/catalog';
 import { Icon } from './icons';
 import CountUp from './CountUp';
 
@@ -149,6 +149,16 @@ export default function Today({ s, data, today, setDay, openDay, editPast, goBac
         </button>
       </section>
 
+      {s.flags.map((id) => (
+        <section key={id} className="card alert">
+          <Icon name="alert" />
+          <div>
+            <h2 className="card-title">{FLAGS[id][0]}</h2>
+            <p>{FLAGS[id][1]}</p>
+          </div>
+        </section>
+      ))}
+
       {s.last && (
         <section className="card">
           <h2 className="card-title">Lo que viene</h2>
@@ -198,6 +208,9 @@ export default function Today({ s, data, today, setDay, openDay, editPast, goBac
         {s.phase === 'none' && (
           <button type="button" className="btn primary wide" onClick={editPast}>Marcar mi última regla</button>
         )}
+        <ul className="tips">
+          {TIPS[s.phase].map((t) => <li key={t}>{t}</li>)}
+        </ul>
       </section>
 
       {needBackup && (

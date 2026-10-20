@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { addDays, diff, fmtShort, patterns } from '../_lib/cycle';
-import { STATE, TREND, label } from '../_lib/catalog';
+import { STATE, TREND, FLAGS, label } from '../_lib/catalog';
 import { Icon } from './icons';
 import Report from './Report';
 import CountUp from './CountUp';
@@ -51,6 +51,7 @@ function CycleBars({ s, today }) {
             : `Ciclo del ${fmtShort(picked.start)}: ${days(picked.len)}, regla de ${days(picked.periodLength)}.`
           : 'Toca un ciclo para ver el detalle.'}
       </p>
+      {s.accuracy && <p className="hint">Acierto: en tus últimos {s.accuracy.cycles} ciclos la predicción se habría desviado {String(s.accuracy.error).replace('.', ',')} días de media ({s.accuracy.within2} de {s.accuracy.cycles} con 2 días o menos).</p>}
       {rows.length > 8 && <button type="button" className="link small" onClick={() => setAll(!all)}>{all ? 'Ver solo los últimos' : `Ver los ${rows.length} ciclos`}</button>}
     </section>
   );
@@ -222,6 +223,15 @@ export default function Stats({ s, data, today }) {
       </div>
       {s.measured < 3 && <p className="fine">Hasta tener tres ciclos completos, la media usa lo que pusiste en Ajustes.</p>}
 
+      {s.flags.map((id) => (
+        <section key={id} className="card alert">
+          <Icon name="alert" />
+          <div>
+            <h2 className="card-title">{FLAGS[id][0]}</h2>
+            <p>{FLAGS[id][1]}</p>
+          </div>
+        </section>
+      ))}
       <Assessment rows={s.assessment} />
       <TrendChart s={s} />
       <CycleBars s={s} today={today} />

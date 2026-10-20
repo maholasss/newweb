@@ -3,6 +3,9 @@
 import { useRef, useState } from 'react';
 import * as V from '../_lib/vault';
 import * as S from '../_lib/sync';
+import * as B from '../_lib/bio';
+import { useEffect } from 'react';
+import { LEARN } from '../_lib/catalog';
 import { addDays, fmtShort } from '../_lib/cycle';
 import { Icon } from './icons';
 import { deliver } from '../_lib/files';
@@ -47,6 +50,19 @@ export default function Settings({ s, data, today, setSettings, exportBackup, re
   const [rp, setRp] = useState('');
   const [pw, setPw] = useState({ open: false, cu: '', cp: '', nu: '', np: '', np2: '', msg: '', busy: false });
   const setP = (patch) => setPw((p) => ({ ...p, ...patch }));
+  const [bio, setBio] = useState({ can: false, on: B.enabled(), msg: '' });
+  useEffect(() => { B.available().then((can) => setBio((b) => ({ ...b, can }))); }, []);
+  async function toggleBio(on) {
+    if (!on) { B.disable(); return setBio((b) => ({ ...b, on: false, msg: '' })); }
+    const user = window.prompt('Escribe tu usuario de Luna para asociarle la cara o la huella de este móvil:');
+    if (!user) return;
+    try {
+      await B.enroll(user.trim().toLowerCase());
+      setBio((b) => ({ ...b, on: true, msg: 'Listo. A partir de ahora, al abrir la app te pedirá la cara o la huella y la sesión se recuerda 30 días.' }));
+    } catch {
+      setBio((b) => ({ ...b, on: false, msg: 'No se ha podido activar. Comprueba que el móvil tiene Face ID o huella configurados.' }));
+    }
+  }
 
   async function doExport() {
     setBackupMsg('');
@@ -139,6 +155,17 @@ export default function Settings({ s, data, today, setSettings, exportBackup, re
           </div>
         </div>
 
+        {bio.can && (
+          <label className="setting switch">
+            <div>
+              <b>Desbloquear con Face ID o huella</b>
+              <small>Al abrir la app pide la cara o la huella en vez de la contraseña. La contraseña sigue haciendo falta en otros móviles y para la nube.</small>
+            </div>
+            <input type="checkbox" role="switch" checked={bio.on} onChange={(e) => toggleBio(e.target.checked)} />
+          </label>
+        )}
+        {bio.msg && <p className="msg" role="status">{bio.msg}</p>}
+
         {pw.open ? (
           <form className="pw-form" onSubmit={doChange}>
             <label className="field"><span>Usuario actual</span><input autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false} value={pw.cu} onChange={(e) => setP({ cu: e.target.value })} /></label>
@@ -200,6 +227,18 @@ export default function Settings({ s, data, today, setSettings, exportBackup, re
         <p><b>iPhone:</b> ábrela en Safari, toca Compartir y luego «Añadir a pantalla de inicio».</p>
         <p><b>Mac:</b> en Safari, menú Archivo y luego «Añadir al Dock».</p>
         <p className="hint">Cada app instalada guarda sus propios datos. Para pasarlos de una a otra, usa la copia de seguridad.</p>
+      </section>
+
+      <section className="card">
+        <h2 className="card-title">Saber más</h2>
+        <div className="learn">
+          {LEARN.map(([q, a]) => (
+            <details key={q}>
+              <summary>{q}</summary>
+              <p>{a}</p>
+            </details>
+          ))}
+        </div>
       </section>
 
       <section className="card soft">

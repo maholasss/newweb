@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import Sheet from './Sheet';
 import { addDays, fmt, fmtShort, hadSex } from '../_lib/cycle';
-import { STATE, TREND, OV_SOURCE, label } from '../_lib/catalog';
+import { STATE, TREND, OV_SOURCE, FLAGS, label } from '../_lib/catalog';
 import { Icon } from './icons';
 
 const long = (k) => fmt(k, { day: 'numeric', month: 'long', year: 'numeric' });
@@ -36,6 +36,8 @@ export default function Report({ s, data, today, sym, onClose }) {
     `Última regla: ${long(s.last.start)} (${s.last.length} días).`,
     s.lutealLearned ? `Fase lútea media: ${s.luteal} días (${confirmed} ciclos con ovulación confirmada).` : null,
     s.trend ? `${TREND[s.trend]}.` : null,
+    ...s.flags.map((id) => `MOTIVO DE CONSULTA: ${FLAGS[id][0]}. ${FLAGS[id][1]}`),
+    s.accuracy ? `Acierto de la predicción: ±${String(s.accuracy.error).replace('.', ',')} días de media en ${s.accuracy.cycles} ciclos.` : null,
     'Valoración:',
     ...s.assessment.filter((r) => r.state).map((r) => `· ${r.title}: ${r.value} (${STATE[r.state].toLowerCase()})${r.state !== 'ok' ? `. ${r.text}` : ''}`),
     'Ciclos:',
@@ -78,6 +80,12 @@ export default function Report({ s, data, today, sym, onClose }) {
           {!data.settings.hormonal ? null : <div><dt>Anticonceptivo hormonal</dt><dd>Sí</dd></div>}
         </dl>
 
+        {s.flags.length > 0 && (
+          <>
+            <h3>Motivos de consulta</h3>
+            <ul>{s.flags.map((id) => <li key={id}><b>{FLAGS[id][0]}.</b> {FLAGS[id][1]}</li>)}</ul>
+          </>
+        )}
         <h3>Valoración</h3>
         <table>
           <thead><tr><th>Medida</th><th>Valor</th><th>Estado</th></tr></thead>

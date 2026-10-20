@@ -540,3 +540,15 @@ textarea { resize: vertical; min-height: 88px; display: block; }
 /* Permiso de la nube */
 .consent { display: grid; gap: 12px; padding-bottom: 24px; }
 .consent .btn { justify-content: center; }
+
+/* Consejos y Saber más */
+.tips { margin: 4px 0 0; padding-left: 18px; display: grid; gap: 8px; font-size: 14.5px; }
+.tips li::marker { color: var(--period); }
+.learn { display: grid; }
+.learn details { border-top: 0.5px solid var(--line); }
+.learn details:first-child { border-top: 0; }
+.learn summary { cursor: pointer; padding: 11px 0; font-weight: 500; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+.learn summary::-webkit-details-marker { display: none; }
+.learn summary::after { content: '+'; color: var(--muted); font-size: 18px; line-height: 1; }
+.learn details[open] summary::after { content: '−'; }
+.learn p { margin: 0 0 12px; font-size: 14.5px; color: var(--muted); }

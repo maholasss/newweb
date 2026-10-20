@@ -5,8 +5,9 @@
 //   y, con 4 o más, los que se salen mucho del resto (viajes, enfermedad).
 // · Hasta tener 3 ciclos, la media se mezcla con lo puesto en Ajustes.
 // · La siguiente regla se predice con esa media y un margen (±) según lo que varían tus ciclos.
-// · La ovulación la fija, por orden: test positivo (LH), subida de temperatura basal
-//   (regla 3 sobre 6), pico de flujo clara de huevo, o si no, calendario: regla − fase lútea.
+// · La ovulación la fija, por orden: test positivo (LH); método sintotérmico (Sensiplan):
+//   subida de temperatura (3 sobre 6, ignorando mediciones alteradas) cruzada con el pico
+//   de flujo; una sola de las dos señales; o si no, calendario: regla − fase lútea.
 // · La fase lútea (14 por defecto) se aprende de tus ciclos con ovulación confirmada.
 // · Ventana fértil de 10 días (ovulación el octavo), más ancha si tus ciclos varían mucho.
 // · Lo "normal" sigue los criterios de la FIGO (2018), los mismos que usa Salud de Apple.
@@ -82,28 +83,47 @@ function quantile(sorted, q) {
   return sorted[lo] + (sorted[Math.min(lo + 1, sorted.length - 1)] - sorted[lo]) * (i - lo);
 }
 
-// Señales de ovulación dentro de un ciclo [start, end]. Devuelve { ov, source } o null.
+// Señales de ovulación dentro de un ciclo [start, end], con las reglas de Sensiplan.
+// Devuelve { ov, source, confidence, until } (until = último día fértil confirmado) o null.
+const FERTILE_MUCUS = new Set(['eggwhite', 'watery']);
 function detectOvulation(days, start, end) {
   const keys = Object.keys(days).filter((k) => k >= start && k <= end).sort();
   // 1. Test de ovulación positivo: se ovula al día siguiente
   const lh = keys.find((k) => days[k]?.lh === 'pos' && diff(start, k) >= 5);
-  if (lh) return { ov: addDays(lh, 1), source: 'lh' };
-  // 2. Temperatura basal: tres días seguidos ≥ 0,2 °C por encima del máximo de los seis anteriores
-  const temps = keys.filter((k) => typeof days[k]?.temp === 'number').map((k) => ({ k, t: days[k].temp }));
+  if (lh) return { ov: addDays(lh, 1), source: 'lh', confidence: 'high', until: addDays(lh, 3) };
+
+  // 2. Temperatura: se ignoran las mediciones marcadas como alteradas (fiebre, alcohol, mal sueño).
+  //    Regla 3 sobre 6: tres mediciones seguidas por encima del máximo de las seis anteriores,
+  //    y la tercera al menos 0,2 °C por encima. Se ovula el día antes de la primera alta.
+  const temps = keys.filter((k) => typeof days[k]?.temp === 'number' && !days[k].disturbed).map((k) => ({ k, t: days[k].temp }));
+  let temp = null;
   for (let i = 6; i + 2 < temps.length; i++) {
     const base = Math.max(...temps.slice(i - 6, i).map((x) => x.t));
-    if (temps[i].t >= base + 0.2 && temps[i + 1].t >= base + 0.2 && temps[i + 2].t >= base + 0.2 && diff(start, temps[i].k) >= 7) {
-      return { ov: temps[i - 1].k, source: 'bbt' };
+    const three = temps.slice(i, i + 3);
+    if (three.every((x) => x.t > base) && three[2].t >= base + 0.2 && diff(start, three[0].k) >= 7 && diff(three[0].k, three[2].k) <= 3) {
+      temp = { ov: addDays(three[0].k, -1), until: three[2].k };
+      break;
     }
   }
-  // 3. Pico de flujo fértil: último día de clara de huevo o acuoso seguido de flujo no fértil
-  const fertileMucus = new Set(['eggwhite', 'watery']);
-  const mucus = keys.filter((k) => days[k]?.mucus);
-  for (let i = mucus.length - 2; i >= 0; i--) {
-    if (fertileMucus.has(days[mucus[i]].mucus) && !fertileMucus.has(days[mucus[i + 1]].mucus) && diff(start, mucus[i]) >= 7) {
-      return { ov: mucus[i], source: 'mucus' };
-    }
+
+  // 3. Flujo: el pico es el último día de clara de huevo o acuoso; se confirma cuando pasan
+  //    tres días sin flujo fértil (y al menos uno de ellos apuntado con flujo menor).
+  let mucus = null;
+  const fertileDays = keys.filter((k) => FERTILE_MUCUS.has(days[k]?.mucus) && diff(start, k) >= 6);
+  for (let i = fertileDays.length - 1; i >= 0; i--) {
+    const peak = fertileDays[i];
+    const after = [1, 2, 3].map((n) => addDays(peak, n));
+    if (after.some((k) => FERTILE_MUCUS.has(days[k]?.mucus))) continue;
+    if (after[2] > end) break;
+    if (after.some((k) => days[k]?.mucus)) { mucus = { ov: peak, until: after[2] }; break; }
   }
+
+  // Doble comprobación: si temperatura y flujo coinciden (±3 días) la ovulación es segura
+  if (temp && mucus && Math.abs(diff(temp.ov, mucus.ov)) <= 3) {
+    return { ov: temp.ov, source: 'sympto', confidence: 'high', until: temp.until > mucus.until ? temp.until : mucus.until };
+  }
+  if (temp) return { ov: temp.ov, source: 'bbt', confidence: 'medium', until: temp.until };
+  if (mucus) return { ov: mucus.ov, source: 'mucus', confidence: 'medium', until: mucus.until };
   return null;
 }
 
@@ -118,7 +138,7 @@ export function summarize(data, today) {
     const det = s.hormonal ? null : detectOvulation(days, p.start, end);
     return {
       start: p.start, periodLength: p.length, heavy: p.heavy, length,
-      ovConfirmed: det?.ov || null, ovSource: det?.source || null,
+      ovConfirmed: det?.ov || null, ovSource: det?.source || null, ovConfidence: det?.confidence || null, ovUntil: det?.until || null,
       luteal: det && length ? length - diff(p.start, det.ov) : null,
     };
   });
@@ -151,6 +171,14 @@ export function summarize(data, today) {
   const lutealObs = done.filter((c) => c.luteal != null && c.luteal >= 7 && c.luteal <= 20).slice(-6).map((c) => c.luteal);
   const luteal = lutealObs.length >= 2 ? Math.round(mean(lutealObs)) : s.luteal;
 
+  // Acierto: cuánto se habría desviado la predicción en cada ciclo pasado (a partir del cuarto)
+  const errors = [];
+  for (let i = 3; i < done.length; i++) {
+    const prev = done.slice(Math.max(0, i - 6), i).map((c) => c.length);
+    errors.push(Math.abs(done[i].length - Math.round(mean(prev))));
+  }
+  const accuracy = errors.length ? { cycles: errors.length, error: Math.round((mean(errors)) * 10) / 10, within2: errors.filter((e) => e <= 2).length } : null;
+
   // Tendencia: últimos 3 frente a los 3 anteriores
   let trend = null;
   if (done.length >= 6) {
@@ -164,6 +192,8 @@ export function summarize(data, today) {
   let cycleDay = null;
   let ovulation = null;
   let ovSource = null;
+  let ovConfidence = 'low';
+  let ovUntil = null;
   const predicted = [];
   const fertile = [];
 
@@ -174,6 +204,8 @@ export function summarize(data, today) {
     if (cur.ovConfirmed) {
       ovulation = cur.ovConfirmed;
       ovSource = cur.ovSource;
+      ovConfidence = cur.ovConfidence;
+      ovUntil = cur.ovUntil;
       // Con ovulación confirmada, la regla llega una fase lútea después (así lo ajusta Flo)
       if (!ongoing) next = addDays(ovulation, luteal);
     } else {
@@ -199,7 +231,7 @@ export function summarize(data, today) {
   // Ventana fértil de 10 días con la ovulación el octavo (como Flo): 7 antes y 2 después.
   // Si los ciclos varían mucho, se abre por delante (Flo llega a 14 días).
   const extra = ovSource === 'calendar' ? Math.min(4, Math.max(0, spread - 3)) : 0;
-  const windows = fertile.map((ov) => ({ ov, start: addDays(ov, -7 - extra), end: addDays(ov, 2) }));
+  const windows = fertile.map((ov) => ({ ov, start: addDays(ov, -7 - extra), end: ov === ovulation && ovUntil && ovUntil > addDays(ov, 2) ? ovUntil : addDays(ov, 2) }));
 
   let phase = 'none';
   if (last) {
@@ -209,7 +241,8 @@ export function summarize(data, today) {
     else if (s.hormonal) phase = 'cycle';
     else {
       const d = diff(ovulation, today);
-      phase = d === 0 ? 'ovulation' : d >= -7 - extra && d <= 2 ? 'fertile' : d < 0 ? 'follicular' : 'luteal';
+      const w = windows.find((x) => x.ov === ovulation);
+      phase = d === 0 ? 'ovulation' : w && today >= w.start && today <= w.end ? 'fertile' : d < 0 ? 'follicular' : 'luteal';
     }
   }
 
@@ -222,14 +255,16 @@ export function summarize(data, today) {
   }
 
   const summary = {
-    periods, cycles, last, ongoing, avgCycle, avgPeriod, minCycle, maxCycle, spread, luteal, lutealLearned: lutealObs.length >= 2, trend,
+    periods, cycles, last, ongoing, avgCycle, avgPeriod, minCycle, maxCycle, spread, luteal, lutealLearned: lutealObs.length >= 2, trend, accuracy,
     measured: n, next, nextRange: next ? [addDays(next, -spread), addDays(next, spread)] : null,
-    late, cycleDay, ovulation: s.hormonal ? null : ovulation, ovSource: s.hormonal ? null : ovSource,
+    late, cycleDay, ovulation: s.hormonal ? null : ovulation, ovSource: s.hormonal ? null : ovSource, ovConfidence: s.hormonal ? null : ovConfidence,
     predicted, windows, phase, chance,
     periodDay: ongoing ? diff(last.start, today) + 1 : null,
     daysToNext: next ? diff(today, next) : null,
     deviations: deviations(days, periods, done, today),
   };
+  summary.pms = premenstrual(days, cycles);
+  summary.flags = redFlags(days, periods, done, today, ongoing);
   summary.assessment = assess(summary, today);
   return summary;
 }
@@ -272,6 +307,61 @@ function deviations(days, periods, done, today) {
   }
   if (spotCycles.size >= 2) out.push('spotting');
   return out;
+}
+
+// Banderas rojas: motivos claros de consulta (criterios habituales en ginecología).
+function redFlags(days, periods, done, today, ongoing) {
+  const out = [];
+  const last = periods[periods.length - 1];
+  const from = addDays(today, -182);
+  if (last && !ongoing && diff(last.start, today) >= 90) out.push('amenorrhea');
+  const last3 = done.slice(-3).map((c) => c.length);
+  if (last3.length === 3 && last3.every((l) => l < 21)) out.push('short3');
+  if (last3.length === 3 && last3.every((l) => l > 35)) out.push('long3');
+  if (periods.some((p) => p.start >= from && p.length >= 8)) out.push('longbleed');
+  // Sangrado tras relaciones: manchado fuera de la regla el mismo día o el siguiente a relaciones, dos veces
+  let postcoital = 0;
+  for (const [k, d] of Object.entries(days)) {
+    if (k < from || d.flow !== 'spot') continue;
+    const inPeriod = periods.some((p) => k >= addDays(p.start, -1) && k <= addDays(p.end, 1));
+    if (!inPeriod && (hadSex(d) || hadSex(days[addDays(k, -1)]))) postcoital++;
+  }
+  if (postcoital >= 2) out.push('postcoital');
+  // Test de embarazo positivo y sangrado en las dos semanas siguientes
+  for (const [k, d] of Object.entries(days)) {
+    if (d.preg !== 'pos' || k < addDays(today, -60)) continue;
+    for (let i = 0; i <= 14; i++) if (isBleed(days[addDays(k, i)])) { out.push('pregbleed'); break; }
+    if (out.includes('pregbleed')) break;
+  }
+  return out;
+}
+
+// Síntomas premenstruales con los criterios diarios del DSM-5: síntomas en la semana antes de la
+// regla que no aparecen en la semana después de ella. Dos ciclos seguidos con patrón = SPM;
+// cinco síntomas o más con uno de ánimo, en dos ciclos = patrón compatible con TDPM.
+const PMS_CORE = ['swings', 'sensitive', 'irritable', 'anxious', 'sad'];
+const PMS_OTHER = ['unmotivated', 'fatigue', 'cravings', 'hunger', 'insomnia', 'breasts', 'bloating', 'headache', 'muscle'];
+function premenstrual(days, cycles) {
+  const dayItems = (k) => new Set([...(days[k]?.sym || []), ...(days[k]?.mood || [])]);
+  const met = [];
+  for (const c of cycles.filter((c) => c.length && c.length >= 15 && c.length <= 90).slice(-6)) {
+    const next = addDays(c.start, c.length);
+    const lutealDays = [...Array(7)].map((_, i) => addDays(next, -1 - i));
+    const follDays = [...Array(7)].map((_, i) => addDays(c.start, c.periodLength + i));
+    const logged = lutealDays.filter((k) => days[k]).length + follDays.filter((k) => days[k]).length;
+    if (logged < 6) continue; // sin registro diario no se puede valorar
+    const count = (list, id) => list.filter((k) => dayItems(k).has(id)).length;
+    const core = PMS_CORE.filter((id) => count(lutealDays, id) >= 2 && count(follDays, id) === 0);
+    const other = PMS_OTHER.filter((id) => count(lutealDays, id) >= 2 && count(follDays, id) === 0);
+    if (core.length + other.length >= 1) met.push({ start: c.start, core, other, total: core.length + other.length });
+  }
+  const pmdd = met.filter((m) => m.core.length >= 1 && m.total >= 5);
+  const pms = met.filter((m) => m.total >= 2);
+  const items = [...new Set(met.flatMap((m) => [...m.core, ...m.other]))];
+  return {
+    level: pmdd.length >= 2 ? 'pmdd' : pms.length >= 2 ? 'pms' : 'none',
+    cycles: met.length, evaluated: met.length > 0, items,
+  };
 }
 
 // "Así está tu ciclo": cada medida frente a lo normal. state: 'ok' | 'warn' | 'bad' | null (sin datos).
@@ -323,6 +413,17 @@ function assess(s, today) {
       state: s.luteal >= NORMAL.luteal[0] && s.luteal <= NORMAL.luteal[1] ? 'ok' : 'warn',
       normal: 'De la ovulación a la regla suelen pasar entre 11 y 17 días.',
       text: s.luteal < NORMAL.luteal[0] ? 'Tu fase lútea sale corta. Si buscas embarazo, es un dato útil para tu ginecóloga.' : 'Tu fase lútea sale larga: revisa que los tests de ovulación estén bien apuntados.',
+    });
+  }
+  if (s.pms.evaluated) {
+    rows.push({
+      id: 'pms', title: 'Síntomas premenstruales',
+      value: s.pms.level === 'pmdd' ? 'patrón intenso' : s.pms.level === 'pms' ? 'patrón de SPM' : 'leves o ninguno',
+      state: s.pms.level === 'pmdd' ? 'bad' : s.pms.level === 'pms' ? 'warn' : 'ok',
+      normal: 'Es normal notar algo la semana antes de la regla. Cuenta como SPM si los mismos síntomas vuelven cada ciclo y desaparecen con la regla.',
+      text: s.pms.level === 'pmdd'
+        ? 'En dos o más ciclos tienes cinco o más síntomas la semana antes de la regla, con cambios de ánimo, que desaparecen después. Es un patrón compatible con trastorno disfórico premenstrual (TDPM): llévaselo a tu ginecóloga, tiene tratamiento.'
+        : 'Los mismos síntomas se repiten la semana antes de la regla en dos o más ciclos y desaparecen con ella. Si te limitan, coméntalo: hay opciones.',
     });
   }
   if (s.deviations.includes('infrequent')) {

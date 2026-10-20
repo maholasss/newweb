@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as V from '../_lib/vault';
 import * as S from '../_lib/sync';
+import * as B from '../_lib/bio';
 import { normalize, summarize, todayKey } from '../_lib/cycle';
 import Lock from './Lock';
 import Today from './Today';
@@ -200,17 +201,22 @@ export default function App() {
 
   // Sesión recordada: entra sola durante 7 días sin pedir la contraseña
   const [resuming, setResuming] = useState(true);
+  const [pending, setPending] = useState(null);
   useEffect(() => {
     let alive = true;
     V.resumeSession().then((r) => {
       if (!alive) return;
-      if (r) { S.armWith(r.cloud); open(r); }
+      if (r) {
+        S.armWith(r.cloud);
+        if (B.enabled()) setPending(r);
+        else open(r);
+      }
       setResuming(false);
     });
     return () => { alive = false; };
   }, [open]);
 
-  if (!data) return resuming ? null : <Lock onOpen={open} />;
+  if (!data) return resuming ? null : <Lock onOpen={(r) => { setPending(null); open(r); }} pending={pending} />;
 
   const title = { today: 'Hoy', cal: 'Calendario', stats: 'Resumen', set: 'Ajustes' }[tab];
   const go = (t) => {

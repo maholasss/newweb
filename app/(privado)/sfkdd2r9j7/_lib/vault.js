@@ -124,8 +124,8 @@ async function idbGet() {
   db.close();
   return v;
 }
-export async function rememberSession(session, cloud) {
-  try { await idbPut({ key: session.key, kdf: session.kdf, cloud, exp: Date.now() + SESSION_DAYS * 86400000 }); } catch {}
+export async function rememberSession(session, cloud, days = SESSION_DAYS) {
+  try { await idbPut({ key: session.key, kdf: session.kdf, cloud, exp: Date.now() + days * 86400000 }); } catch {}
 }
 export async function forgetSession() {
   try { await idbPut(null); } catch {}

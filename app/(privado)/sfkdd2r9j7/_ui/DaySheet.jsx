@@ -102,6 +102,12 @@ export default function DaySheet({ k, s, data, today, setDay, clearDay, onClose 
               <legend>Medidas</legend>
               <NumberField label="Temperatura basal" unit="°C" value={day.temp} min={34} max={42} onChange={(v) => setDay(k, { temp: v })} />
               <NumberField label="Peso" unit="kg" value={day.weight} min={25} max={300} onChange={(v) => setDay(k, { weight: v })} />
+              {day.temp != null && (
+                <div className="chips">
+                  <button type="button" className={`chip ${day.disturbed ? 'on' : ''}`} aria-pressed={!!day.disturbed} onClick={() => setDay(k, { disturbed: day.disturbed ? null : true })}>Medición alterada</button>
+                  <span className="hint">Fiebre, alcohol, mal sueño u hora distinta: no se usa para calcular la ovulación.</span>
+                </div>
+              )}
             </fieldset>
           </>
         )}
