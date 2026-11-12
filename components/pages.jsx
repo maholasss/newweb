@@ -10,7 +10,7 @@ import { Rail, Pinned, Words, Full, Finale } from './AboutScroll';
 import HeroCards from './HeroCards';
 import BackToPortfolio from './BackToPortfolio';
 
-const UPLOAD = '2026-07-16';
+const UPLOAD = '2026-07-16T12:00:00+02:00';
 
 export const person = (lang) => ({
   '@type': 'Person',
@@ -48,7 +48,7 @@ const videoLd = (b, lang) =>
     contentUrl: `${SITE}${v}.mp4`,
     uploadDate: UPLOAD,
     duration: isoDuration(b.d[i]),
-    creator: { '@id': `${SITE}/#mahola` },
+    creator: { '@type': 'Person', '@id': `${SITE}/#mahola`, name: 'Mahola', url: SITE },
     ...(b.videoCredit ? { producer: gorka, copyrightHolder: gorka } : {}),
   }));
 
